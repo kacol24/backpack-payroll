@@ -33,9 +33,6 @@ class PayslipCrudController extends CrudController
         CRUD::setModel(\App\Models\Payslip::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/payslip');
         CRUD::setEntityNameStrings('payslip', 'payslips');
-
-        // save the redirect choice for next time
-        $this->crud->setSaveAction('save_and_edit');
     }
 
     /**
@@ -139,6 +136,8 @@ class PayslipCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        $this->crud->removeSaveActions(['save_and_new', 'save_and_back', 'save_and_preview']);
+
         CRUD::setValidation(PayslipRequest::class);
 
         CRUD::field('period')->type('date_picker')
@@ -167,6 +166,7 @@ class PayslipCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
+        $this->crud->removeSaveActions(['save_and_new', 'save_and_back', 'save_and_preview']);
         CRUD::setUpdateContentClass('col-md-12');
         CRUD::field('period')->type('date_picker')
             ->attributes([
