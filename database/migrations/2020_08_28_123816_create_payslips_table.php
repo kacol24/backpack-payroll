@@ -24,11 +24,15 @@ class CreatePayslipsTable extends Migration
             $table->unsignedInteger('total_allowances')->default(0);
             $table->unsignedInteger('total_deductions')->default(0);
             $table->unsignedInteger('net_pay')->default(0);
-            
+
+            $table->longText('allowances')->nullable();
+            $table->longText('deductions')->nullable();
+
             $table->timestamps();
             $table->timestamp('paid_at')->nullable();
 
             $table->foreign('employee_id')->references('id')->on('employees');
+            $table->unique(['employee_id', 'period']);
         });
     }
 

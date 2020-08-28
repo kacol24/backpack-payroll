@@ -19,11 +19,30 @@ class Payslip extends Model
 
     // protected $primaryKey = 'id';
     // public $timestamps = false;
-    protected $guarded = ['id'];
+    //protected $guarded = ['id'];
 
-    // protected $fillable = [];
+    protected $fillable = [
+        'employee_id',
+        'name',
+        'period',
+        'gross_pay',
+        'total_allowances',
+        'total_deductions',
+        'net_pay',
+        'paid_at',
+        'allowances',
+        'deductions',
+    ];
+
     // protected $hidden = [];
-    // protected $dates = [];
+    protected $dates = [
+        'paid_at',
+    ];
+
+    protected $casts = [
+        'allowances' => 'object',
+        'deductions' => 'object',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -39,16 +58,6 @@ class Payslip extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class);
-    }
-
-    public function allowances()
-    {
-        return $this->belongsToMany(Allowance::class);
-    }
-
-    public function deductions()
-    {
-        return $this->belongsToMany(Deduction::class);
     }
 
     /*
@@ -81,9 +90,29 @@ class Payslip extends Model
     {
         return 'Rp' . number_format($this->net_pay, 0, ',', '.');
     }
+
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setGrossPayAttribute($value)
+    {
+        $this->attributes['gross_pay'] = strip_money_mask($value);
+    }
+
+    public function setTotalAllowancesAttribute($value)
+    {
+        $this->attributes['total_allowances'] = strip_money_mask($value);
+    }
+
+    public function setTotalDeductionsAttribute($value)
+    {
+        $this->attributes['total_deductions'] = strip_money_mask($value);
+    }
+
+    public function setNetPayAttribute($value)
+    {
+        $this->attributes['net_pay'] = strip_money_mask($value);
+    }
 }
