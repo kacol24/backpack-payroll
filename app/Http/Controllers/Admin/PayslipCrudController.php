@@ -33,6 +33,8 @@ class PayslipCrudController extends CrudController
         CRUD::setModel(\App\Models\Payslip::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/payslip');
         CRUD::setEntityNameStrings('payslip', 'payslips');
+
+        $this->crud->setShowView('payslip.show');
     }
 
     /**
@@ -140,11 +142,6 @@ class PayslipCrudController extends CrudController
 
         CRUD::setValidation(PayslipRequest::class);
 
-        CRUD::field('period')->type('date_picker')
-            ->wrapper([
-                'class' => 'form-group col-sm-6',
-            ])
-            ->label('Period');
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -156,6 +153,11 @@ class PayslipCrudController extends CrudController
                 'class' => 'form-group col-sm-6',
             ])
             ->label('Employee');
+        CRUD::field('period')->type('date_picker')
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ])
+            ->label('Period');
     }
 
     /**
