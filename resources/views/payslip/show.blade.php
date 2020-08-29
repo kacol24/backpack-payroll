@@ -44,10 +44,10 @@
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-between">
-                        <div class="col-2">
-                            <img src="{{ asset('images/logo-square.png') }}" alt="company logo" class="img-fluid w-75">
+                        <div class="col-3">
+                            <img src="{{ asset('images/logo-square.png') }}" alt="company logo" class="img-fluid w-100">
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <address>
                                 <strong>
                                     Kamsia Boba Loop
@@ -74,7 +74,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <table class="w-100">
                                 <tbody>
                                 <tr>
@@ -217,6 +217,17 @@
     <link rel="stylesheet" href="{{ asset('packages/backpack/crud/css/crud.css') }}">
     <link rel="stylesheet" href="{{ asset('packages/backpack/crud/css/show.css') }}">
     <link rel="stylesheet" href="{{ asset('packages/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css') }}">
+    <style>
+        @media print {
+            body {
+                font-size: 16pt;
+            }
+
+            .table, th, td, tr, .border-right {
+                border-color: #000 !important;
+            }
+        }
+    </style>
 @endsection
 
 @section('after_scripts')
