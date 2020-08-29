@@ -85,14 +85,16 @@
                                         : {{ $entry->name }}
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>
-                                        Tanggal Pembayaran:
-                                    </th>
-                                    <td>
-                                        : {{ $entry->paid_at->format('d F Y') }}
-                                    </td>
-                                </tr>
+                                @if($entry->paid_at)
+                                    <tr>
+                                        <th>
+                                            Tanggal Pembayaran:
+                                        </th>
+                                        <td>
+                                            : {{ $entry->paid_at->format('d F Y') }}
+                                        </td>
+                                    </tr>
+                                @endif
                                 </tbody>
                             </table>
                         </div>
