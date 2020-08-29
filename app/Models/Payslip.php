@@ -32,11 +32,13 @@ class Payslip extends Model
         'paid_at',
         'allowances',
         'deductions',
+        'notes',
     ];
 
     // protected $hidden = [];
     protected $dates = [
         'paid_at',
+        'period',
     ];
 
     protected $casts = [
@@ -73,22 +75,32 @@ class Payslip extends Model
     */
     public function getFormattedGrossPayAttribute()
     {
-        return 'Rp' . number_format($this->gross_pay, 0, ',', '.');
+        return format_money($this->gross_pay);
     }
 
     public function getFormattedTotalAllowancesAttribute()
     {
-        return 'Rp' . number_format($this->total_allowances, 0, ',', '.');
+        return format_money($this->total_allowances);
     }
 
     public function getFormattedTotalDeductionsAttribute()
     {
-        return 'Rp' . number_format($this->total_deductions, 0, ',', '.');
+        return format_money($this->total_deductions);
     }
 
     public function getFormattedNetPayAttribute()
     {
-        return 'Rp' . number_format($this->net_pay, 0, ',', '.');
+        return format_money($this->net_pay);
+    }
+
+    public function getTotalEarningsAttribute()
+    {
+        return $this->gross_pay + $this->total_allowances;
+    }
+
+    public function getFormattedTotalEarningsAttribute()
+    {
+        return format_money($this->total_earnings);
     }
 
     /*

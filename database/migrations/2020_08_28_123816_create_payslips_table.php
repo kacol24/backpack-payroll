@@ -27,12 +27,13 @@ class CreatePayslipsTable extends Migration
 
             $table->longText('allowances')->nullable();
             $table->longText('deductions')->nullable();
+            $table->longText('notes')->nullable();
 
             $table->timestamps();
             $table->timestamp('paid_at')->nullable();
 
             $table->foreign('employee_id')->references('id')->on('employees');
-            $table->unique(['employee_id', 'period']);
+            $table->unique(['employee_id', 'period', 'name']);
         });
     }
 

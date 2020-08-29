@@ -91,7 +91,7 @@ class PayslipCrudController extends CrudController
         $deductions = $data['deductions'];
         $totalDeductions = json_decode($deductions, true);
         $data['total_deductions'] = array_reduce($totalDeductions, function ($carry, $deduction) {
-            $carry += $deduction['amount'];
+            $carry += strip_money_mask($deduction['amount']);
 
             return $carry;
         }, $initial = 0);
@@ -122,12 +122,23 @@ class PayslipCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        CRUD::column('name')->label('No. Slip');
+        CRUD::column('period')->label('Period')
+            ->type('date');
+        CRUD::column('employee')->label('Employee')
+            ->type('relationship');
+        CRUD::column('gross_pay')->label('Gross Pay')
+            ->type('number')
+            ->prefix('Rp');
+        CRUD::column('total_allowances')->label('Allowances')
+            ->type('number')
+            ->prefix('Rp');
+        CRUD::column('total_deductions')->label('Deductions')
+            ->type('number')
+            ->prefix('Rp');
+        CRUD::column('net_pay')->label('Net Pay')
+            ->type('number')
+            ->prefix('Rp');
     }
 
     /**
@@ -142,6 +153,7 @@ class PayslipCrudController extends CrudController
 
         CRUD::setValidation(PayslipRequest::class);
 
+        CRUD::field('name')->label('No. Slip');
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -149,14 +161,8 @@ class PayslipCrudController extends CrudController
             ->options(function ($query) {
                 return $query->active()->get();
             })
-            ->wrapper([
-                'class' => 'form-group col-sm-6',
-            ])
             ->label('Employee');
         CRUD::field('period')->type('date_picker')
-            ->wrapper([
-                'class' => 'form-group col-sm-6',
-            ])
             ->label('Period');
     }
 
@@ -168,16 +174,9 @@ class PayslipCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        $this->crud->removeSaveActions(['save_and_new', 'save_and_back', 'save_and_preview']);
+        $this->crud->removeSaveActions(['save_and_new', 'save_and_back']);
         CRUD::setUpdateContentClass('col-md-12');
-        CRUD::field('period')->type('date_picker')
-            ->attributes([
-                'disabled' => 'disabled',
-            ])
-            ->wrapper([
-                'class' => 'form-group col-sm-6',
-            ])
-            ->label('Period');
+
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -192,6 +191,24 @@ class PayslipCrudController extends CrudController
                 'class' => 'form-group col-sm-6',
             ])
             ->label('Employee');
+        CRUD::field('period')->type('date_picker')
+            ->attributes([
+                'disabled' => 'disabled',
+            ])
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ])
+            ->label('Period');
+
+        CRUD::field('name')->label('No. Slip')
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ]);
+        CRUD::field('paid_at')->label('Paid At')
+            ->type('date_picker')
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ]);
 
         CRUD::field('gross_pay')->type('money')
             ->prefix('Rp')
@@ -255,6 +272,9 @@ class PayslipCrudController extends CrudController
             ],
             'new_item_label' => 'Add Deduction',
         ]);
+
+        CRUD::field('notes')->label('Notes')
+            ->type('wysiwyg');
 
         CRUD::field('net_pay')->type('money')
             ->attributes([
