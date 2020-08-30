@@ -40,6 +40,10 @@ class Deduction extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('lft');
+    }
 
     /*
     |--------------------------------------------------------------------------

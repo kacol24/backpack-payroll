@@ -16,9 +16,11 @@ class Allowance extends Model
     */
 
     protected $table = 'allowances';
+
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
+
     // protected $fillable = [];
     // protected $hidden = [];
     // protected $dates = [];
@@ -40,6 +42,10 @@ class Allowance extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('lft');
+    }
 
     /*
     |--------------------------------------------------------------------------
