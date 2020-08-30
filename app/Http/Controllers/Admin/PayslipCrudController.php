@@ -38,6 +38,30 @@ class PayslipCrudController extends CrudController
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        $this->crud->hasAccessOrFail('show');
+
+        // get entry ID from Request (makes sure its the last ID for nested resources)
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        // get the info for that entry
+        $this->data['entry'] = $entry = $this->crud->getEntry($id);
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $entry->name . '-' . strtoupper($entry->employee->name);
+        $this->data['forceTitle'] = true;
+
+        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
+        return view($this->crud->getShowView(), $this->data);
+    }
+
+    /**
      * Store a newly created resource in the database.
      *
      * @return \Illuminate\Http\RedirectResponse
