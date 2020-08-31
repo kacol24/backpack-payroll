@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Date;
 
-class Employee extends Model
+class Attendance extends Model
 {
     use CrudTrait;
-    use SoftDeletes;
 
     /*
     |--------------------------------------------------------------------------
@@ -17,7 +16,7 @@ class Employee extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'employees';
+    protected $table = 'attendances';
 
     // protected $primaryKey = 'id';
     // public $timestamps = false;
@@ -26,11 +25,8 @@ class Employee extends Model
     // protected $fillable = [];
     // protected $hidden = [];
     protected $dates = [
-        'start_date',
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
+        'start_at',
+        'end_at',
     ];
 
     /*
@@ -38,31 +34,15 @@ class Employee extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    public function attendanceButtons()
-    {
-        $employee = $this;
-        $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
-                           ->whereNull('end_at')
-                           ->whereHas('employee', function ($query) use ($employee) {
-                               $query->where('id', $employee->id);
-                           })
-                           ->first();
-
-        if ($shift) {
-            return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_out', $this->id) . '"><i class="la la-stop-circle"></i> Clock Out</a>';
-        }
-
-        return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_in', $this->id) . '"><i class="la la-play-circle"></i> Clock In</a>';
-    }
 
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function attendances()
+    public function employee()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->belongsTo(Employee::class);
     }
 
     /*
@@ -70,10 +50,6 @@ class Employee extends Model
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
 
     /*
     |--------------------------------------------------------------------------
@@ -86,8 +62,13 @@ class Employee extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
-    public function setSalaryAttribute($value)
+    public function setStartAtAttribute($value)
     {
-        $this->attributes['salary'] = strip_money_mask($value);
+        $this->attributes['start_at'] = Date::parse($value);
+    }
+
+    public function setEndAtAttribute($value)
+    {
+        $this->attributes['end_at'] = Date::parse($value);
     }
 }

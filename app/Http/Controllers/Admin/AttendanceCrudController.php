@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\EmployeeRequest;
+use App\Http\Requests\AttendanceRequest;
+use App\Models\Attendance;
+use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class EmployeeCrudController
+ * Class AttendanceCrudController
  *
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class EmployeeCrudController extends CrudController
+class AttendanceCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -27,11 +29,9 @@ class EmployeeCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Employee::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/employee');
-        CRUD::setEntityNameStrings('employee', 'employees');
-
-        $this->crud->addButtonFromModelFunction('line', 'attendance_button', 'attendanceButtons', 'beginning');
+        CRUD::setModel(\App\Models\Attendance::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/attendance');
+        CRUD::setEntityNameStrings('attendance', 'attendances');
     }
 
     /**
@@ -42,12 +42,18 @@ class EmployeeCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        CRUD::column('employee')
+            ->type('relationship')
+            ->label('Employee');
+        CRUD::column('start_at')
+            ->type('datetime')
+            ->label('Clock In');
+        CRUD::column('end_at')
+            ->type('datetime')
+            ->label('Clock Out');
+        CRUD::column('comment')
+            ->type('text')
+            ->label('Comment');
     }
 
     /**
@@ -58,14 +64,25 @@ class EmployeeCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(EmployeeRequest::class);
+        CRUD::setValidation(AttendanceRequest::class);
 
-        CRUD::field('active')->type('checkbox')->label('Active?')->default(true);
-        CRUD::field('name')->type('text')->label('Name');
-        CRUD::field('salary')->type('money')->label('Salary')->prefix('Rp');
-
-        CRUD::field('start_date')->type('date_picker')->label('Start Date');
-        CRUD::field('bio')->type('textarea')->label('Bio');
+        CRUD::field('employee_id')->type('select2')
+            ->entity('employee')
+            ->model(Employee::class)
+            ->attribute('name')
+            ->options(function ($query) {
+                return $query->active()->get();
+            })
+            ->label('Employee');
+        CRUD::field('start_at')
+            ->type('datetime_picker')
+            ->label('Clock In');
+        CRUD::field('end_at')
+            ->type('datetime_picker')
+            ->label('Clock Out');
+        CRUD::field('comment')
+            ->type('textarea')
+            ->label('Comment');
     }
 
     /**
