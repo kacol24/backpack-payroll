@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f15e2af0dba0fbc52e236baafe59961f",
+    "content-hash": "06e399e19c0acec9a94dfc6531719e77",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2674,6 +2674,65 @@
                 }
             ],
             "time": "2020-08-18T17:17:46+00:00"
+        },
+        {
+            "name": "riskihajar/terbilang",
+            "version": "1.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/riskihajar/terbilang.git",
+                "reference": "19ee076b9c53541f5f5fb2dad9c981ca56709483"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/riskihajar/terbilang/zipball/19ee076b9c53541f5f5fb2dad9c981ca56709483",
+                "reference": "19ee076b9c53541f5f5fb2dad9c981ca56709483",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=4.2",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Riskihajar\\Terbilang\\TerbilangServiceProvider"
+                    ],
+                    "aliases": {
+                        "Terbilang": "Riskihajar\\Terbilang\\Facades\\Terbilang"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Riskihajar\\Terbilang\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "riskihajar",
+                    "email": "riskihajar@gmail.com",
+                    "homepage": "http://riskihajar.com"
+                }
+            ],
+            "description": "Convert number & date to words in any language for Laravel 4 and above",
+            "homepage": "https://github.com/riskihajar/terbilang",
+            "keywords": [
+                "date to words",
+                "laravel",
+                "number to roman",
+                "number to words",
+                "terbilang"
+            ],
+            "time": "2019-08-28T05:24:32+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

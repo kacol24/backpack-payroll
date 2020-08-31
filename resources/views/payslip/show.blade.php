@@ -202,6 +202,11 @@
                         </tr>
                         </tfoot>
                     </table>
+                    <div class="text-right text-capitalize mt-n2">
+                        <em>
+                            {{ \Terbilang::make($entry->net_pay) }} rupiah
+                        </em>
+                    </div>
                     <div class="mt-5" style="font-style: italic">
                         <strong>
                             Notes:
