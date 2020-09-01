@@ -60,16 +60,16 @@
         },
         {
             "name": "backpack/crud",
-            "version": "4.1.20",
+            "version": "4.1.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Backpack/CRUD.git",
-                "reference": "132be56989a23fd16e0957ed40775c4fba0dfef3"
+                "reference": "187bb0c3ce52ac2bfefeb9cd7518fec27a82ebcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/132be56989a23fd16e0957ed40775c4fba0dfef3",
-                "reference": "132be56989a23fd16e0957ed40775c4fba0dfef3",
+                "url": "https://api.github.com/repos/Laravel-Backpack/CRUD/zipball/187bb0c3ce52ac2bfefeb9cd7518fec27a82ebcc",
+                "reference": "187bb0c3ce52ac2bfefeb9cd7518fec27a82ebcc",
                 "shasum": ""
             },
             "require": {
@@ -140,7 +140,7 @@
                 "read",
                 "update"
             ],
-            "time": "2020-08-27T10:29:04+00:00"
+            "time": "2020-08-31T17:59:00+00:00"
         },
         {
             "name": "brick/math",
@@ -1180,16 +1180,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v7.26.1",
+            "version": "v7.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "fad3e5f03b9ae89853c8a0925231d2b3ce07a9c3"
+                "reference": "17777a92da9b3cf0026f26462d289d596420e6d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/fad3e5f03b9ae89853c8a0925231d2b3ce07a9c3",
-                "reference": "fad3e5f03b9ae89853c8a0925231d2b3ce07a9c3",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/17777a92da9b3cf0026f26462d289d596420e6d0",
+                "reference": "17777a92da9b3cf0026f26462d289d596420e6d0",
                 "shasum": ""
             },
             "require": {
@@ -1334,7 +1334,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2020-08-27T14:22:46+00:00"
+            "time": "2020-09-01T13:41:48+00:00"
         },
         {
             "name": "laravel/tinker",
