@@ -27,6 +27,7 @@ class Attendance extends Model
     protected $dates = [
         'start_at',
         'end_at',
+        'shift_date',
     ];
 
     /*

@@ -71,6 +71,15 @@ class Employee extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function shiftOnDate($date = false)
+    {
+        if (! $date) {
+            $date = now()->format('Y-m-d');
+        }
+
+        return $this->attendances()->where('shift_date', $date)->first();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES
