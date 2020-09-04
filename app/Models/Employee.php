@@ -40,19 +40,25 @@ class Employee extends Model
     */
     public function attendanceButtons()
     {
-        $employee = $this;
-        $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
-                           ->whereNull('end_at')
-                           ->whereHas('employee', function ($query) use ($employee) {
-                               $query->where('id', $employee->id);
-                           })
-                           ->first();
+        $shift = $this->isOnShift();
 
         if ($shift) {
             return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_out', $this->id) . '"><i class="la la-stop-circle"></i> Clock Out</a>';
         }
 
         return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_in', $this->id) . '"><i class="la la-play-circle"></i> Clock In</a>';
+    }
+
+    public function isOnShift()
+    {
+        $employee = $this;
+
+        return Attendance::where('shift_date', now()->format('Y-m-d'))
+                         ->whereNull('end_at')
+                         ->whereHas('employee', function ($query) use ($employee) {
+                             $query->where('id', $employee->id);
+                         })
+                         ->first();
     }
 
     /*
