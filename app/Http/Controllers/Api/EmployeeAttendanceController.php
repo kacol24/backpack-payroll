@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EmployeeResource;
 use App\Models\Attendance;
 use App\Models\Employee;
 
@@ -21,16 +22,16 @@ class EmployeeAttendanceController extends Controller
                 'end_at' => now(),
             ]);
 
-            return response()->json($shift, 200);
+            return response()->json(new EmployeeResource($shift->employee), 200);
         }
 
         $employee = Employee::find($employeeId);
 
-        $shift = $employee->attendances()->create([
+        $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
         ]);
 
-        return response()->json($shift, 201);
+        return response()->json(new EmployeeResource($employee), 201);
     }
 }
