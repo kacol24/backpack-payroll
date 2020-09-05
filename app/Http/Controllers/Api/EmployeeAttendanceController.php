@@ -12,6 +12,7 @@ class EmployeeAttendanceController extends Controller
     public function updateClock($employeeId)
     {
         $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
+                           ->latest()
                            ->whereNull('end_at')
                            ->whereHas('employee', function ($query) use ($employeeId) {
                                $query->where('id', $employeeId);
