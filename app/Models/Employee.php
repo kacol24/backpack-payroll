@@ -77,7 +77,7 @@ class Employee extends Model
             $date = now()->format('Y-m-d');
         }
 
-        return $this->attendances()->where('shift_date', $date)->latest();
+        return $this->attendances()->where('shift_date', $date)->latest()->get();
     }
 
     /*
