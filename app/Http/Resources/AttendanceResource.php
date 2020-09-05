@@ -14,8 +14,8 @@ class AttendanceResource extends JsonResource
             'shift_date'         => $this->shift_date->format('Y-m-d'),
             'start_at'           => $this->start_at->format('Y-m-d H:i:s'),
             'formatted_start_at' => $this->start_at->format('d F Y H:i:s'),
-            'end_at'             => optional($this->end_date)->format('Y-m-d H:i:s'),
-            'formatted_end_at'   => optional($this->end_date)->format('d F Y H:i:s'),
+            'end_at'             => optional($this->end_at)->format('Y-m-d H:i:s'),
+            'formatted_end_at'   => optional($this->end_at)->format('d F Y H:i:s'),
             'comment'            => $this->comment,
         ];
     }
