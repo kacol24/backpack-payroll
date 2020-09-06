@@ -18,7 +18,8 @@ class AttendanceResource extends JsonResource
             'end_at'             => optional($this->end_at)->format('Y-m-d H:i:s'),
             'formatted_end_at'   => optional($this->end_at)->format('d F Y H:i:s'),
             'comment'            => $this->comment,
-            'selfie'             => asset(Storage::url($this->selfie)),
+            'selfie'             => $this->selfie,
+            'selfie_url'         => asset(Storage::url($this->selfie)),
         ];
     }
 }
