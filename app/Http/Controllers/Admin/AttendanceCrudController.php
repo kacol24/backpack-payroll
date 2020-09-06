@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AttendanceRequest;
-use App\Models\Attendance;
 use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -42,6 +41,17 @@ class AttendanceCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::addColumn([
+            'name'  => 'selfie', // The db column name
+            'label' => 'Selfie', // Table column heading
+            'type'  => 'image',
+            // 'prefix' => 'folder/subfolder/',
+            // image from a different disk (like s3 bucket)
+            // 'disk'   => 'disk-name',
+            // optional width/height if 25px is not ok with you
+            // 'height' => '30px',
+            // 'width'  => '30px',
+        ],);
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
@@ -66,6 +76,9 @@ class AttendanceCrudController extends CrudController
     {
         CRUD::setValidation(AttendanceRequest::class);
 
+        CRUD::field('selfie')
+            ->label('Selfie')
+            ->type('upload');
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -83,6 +96,9 @@ class AttendanceCrudController extends CrudController
         CRUD::field('comment')
             ->type('textarea')
             ->label('Comment');
+        CRUD::field('shift_date')
+            ->type('hidden')
+            ->value(now()->format('Y-m-d'));
     }
 
     /**

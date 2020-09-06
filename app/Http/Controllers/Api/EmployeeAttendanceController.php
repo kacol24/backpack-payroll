@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Attendance;
 use App\Models\Employee;
+use Illuminate\Http\Request;
 
 class EmployeeAttendanceController extends Controller
 {
-    public function updateClock($employeeId)
+    public function updateClock(Request $request, $employeeId)
     {
         $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
                            ->latest()
@@ -31,6 +32,7 @@ class EmployeeAttendanceController extends Controller
         $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
+            'selfie'     => $request->file('selfie'),
         ]);
 
         return response()->json(new EmployeeResource($employee), 201);
