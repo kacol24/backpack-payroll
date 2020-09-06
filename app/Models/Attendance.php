@@ -35,6 +35,13 @@ class Attendance extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($obj) {
+            \Storage::disk('public_folder')->delete($obj->image);
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -71,5 +78,14 @@ class Attendance extends Model
     public function setEndAtAttribute($value)
     {
         $this->attributes['end_at'] = Date::parse($value);
+    }
+
+    public function setSelfieAttribute($value)
+    {
+        $attribute_name = "selfie";
+        $disk = "public";
+        $destination_path = "folder_1/subfolder_1";
+
+        $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AttendanceRequest;
-use App\Models\Attendance;
 use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -35,6 +34,32 @@ class AttendanceCrudController extends CrudController
     }
 
     /**
+     * Store a newly created resource in the database.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store()
+    {
+        $this->crud->hasAccessOrFail('create');
+
+        // execute the FormRequest authorization and validation, if one is required
+        $request = $this->crud->validateRequest();
+
+        // insert item in the db
+        dd($this->crud->getStrippedSaveRequest());
+        $item = $this->crud->create($this->crud->getStrippedSaveRequest());
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
+    }
+
+    /**
      * Define what happens when the List operation is loaded.
      *
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
@@ -42,6 +67,17 @@ class AttendanceCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::addColumn([
+            'name'  => 'selfie', // The db column name
+            'label' => 'Selfie', // Table column heading
+            'type'  => 'image',
+            // 'prefix' => 'folder/subfolder/',
+            // image from a different disk (like s3 bucket)
+            // 'disk'   => 'disk-name',
+            // optional width/height if 25px is not ok with you
+            // 'height' => '30px',
+            // 'width'  => '30px',
+        ],);
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
@@ -66,6 +102,9 @@ class AttendanceCrudController extends CrudController
     {
         CRUD::setValidation(AttendanceRequest::class);
 
+        CRUD::field('selfie')
+            ->label('Selfie')
+            ->type('upload');
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -83,6 +122,9 @@ class AttendanceCrudController extends CrudController
         CRUD::field('comment')
             ->type('textarea')
             ->label('Comment');
+        CRUD::field('shift_date')
+            ->type('hidden')
+            ->value(now()->format('Y-m-d'));
     }
 
     /**
