@@ -42,11 +42,13 @@ class Employee extends Model
     {
         $shift = $this->isOnShift();
 
-        if ($shift) {
-            return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_out', $this->id) . '"><i class="la la-stop-circle"></i> Clock Out</a>';
-        }
+        if ($this->is_active) {
+            if ($shift) {
+                return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_out', $this->id) . '"><i class="la la-stop-circle"></i> Clock Out</a>';
+            }
 
-        return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_in', $this->id) . '"><i class="la la-play-circle"></i> Clock In</a>';
+            return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_in', $this->id) . '"><i class="la la-play-circle"></i> Clock In</a>';
+        }
     }
 
     public function isOnShift()
