@@ -12,7 +12,6 @@ class EmployeeAttendanceController extends Controller
 {
     public function updateClock(Request $request, $employeeId)
     {
-        dd($request->all());
         $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
                            ->latest()
                            ->whereNull('end_at')
@@ -33,6 +32,7 @@ class EmployeeAttendanceController extends Controller
         $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
+            'selfie'     => $request->file('selfie'),
         ]);
 
         return response()->json(new EmployeeResource($employee), 201);
