@@ -60,7 +60,7 @@ class EmployeeCrudController extends CrudController
     {
         CRUD::setValidation(EmployeeRequest::class);
 
-        CRUD::field('active')->type('checkbox')->label('Active?')->default(true);
+        CRUD::field('is_active')->type('checkbox')->label('Active?')->default(true);
         CRUD::field('name')->type('text')->label('Name');
         CRUD::field('salary')->type('money')->label('Salary')->prefix('Rp');
 
