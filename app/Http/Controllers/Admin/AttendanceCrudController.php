@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\DeductionRequest;
+use App\Http\Requests\AttendanceRequest;
+use App\Models\Attendance;
+use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
-use Backpack\CRUD\app\Http\Controllers\Operations\ReorderOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class DeductionCrudController
+ * Class AttendanceCrudController
  *
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class DeductionCrudController extends CrudController
+class AttendanceCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-    use ReorderOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -29,18 +29,9 @@ class DeductionCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Deduction::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/deduction');
-        CRUD::setEntityNameStrings('deduction', 'deductions');
-    }
-
-    protected function setupReorderOperation()
-    {
-        // define which model attribute will be shown on draggable elements
-        $this->crud->set('reorder.label', 'name');
-        // define how deep the admin is allowed to nest the items
-        // for infinite levels, set it to 0
-        $this->crud->set('reorder.max_level', 1);
+        CRUD::setModel(\App\Models\Attendance::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/attendance');
+        CRUD::setEntityNameStrings('attendance', 'attendances');
     }
 
     /**
@@ -51,12 +42,18 @@ class DeductionCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        CRUD::column('employee')
+            ->type('relationship')
+            ->label('Employee');
+        CRUD::column('start_at')
+            ->type('datetime')
+            ->label('Clock In');
+        CRUD::column('end_at')
+            ->type('datetime')
+            ->label('Clock Out');
+        CRUD::column('comment')
+            ->type('text')
+            ->label('Comment');
     }
 
     /**
@@ -67,14 +64,25 @@ class DeductionCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(DeductionRequest::class);
+        CRUD::setValidation(AttendanceRequest::class);
 
-        CRUD::setFromDb(); // fields
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
+        CRUD::field('employee_id')->type('select2')
+            ->entity('employee')
+            ->model(Employee::class)
+            ->attribute('name')
+            ->options(function ($query) {
+                return $query->active()->get();
+            })
+            ->label('Employee');
+        CRUD::field('start_at')
+            ->type('datetime_picker')
+            ->label('Clock In');
+        CRUD::field('end_at')
+            ->type('datetime_picker')
+            ->label('Clock Out');
+        CRUD::field('comment')
+            ->type('textarea')
+            ->label('Comment');
     }
 
     /**

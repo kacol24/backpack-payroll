@@ -19,11 +19,32 @@ class Payslip extends Model
 
     // protected $primaryKey = 'id';
     // public $timestamps = false;
-    protected $guarded = ['id'];
+    //protected $guarded = ['id'];
 
-    // protected $fillable = [];
+    protected $fillable = [
+        'employee_id',
+        'name',
+        'period',
+        'gross_pay',
+        'total_allowances',
+        'total_deductions',
+        'net_pay',
+        'paid_at',
+        'allowances',
+        'deductions',
+        'notes',
+    ];
+
     // protected $hidden = [];
-    // protected $dates = [];
+    protected $dates = [
+        'paid_at',
+        'period',
+    ];
+
+    protected $casts = [
+        'allowances' => 'object',
+        'deductions' => 'object',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -41,16 +62,6 @@ class Payslip extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public function allowances()
-    {
-        return $this->belongsToMany(Allowance::class);
-    }
-
-    public function deductions()
-    {
-        return $this->belongsToMany(Deduction::class);
-    }
-
     /*
     |--------------------------------------------------------------------------
     | SCOPES
@@ -64,26 +75,56 @@ class Payslip extends Model
     */
     public function getFormattedGrossPayAttribute()
     {
-        return 'Rp' . number_format($this->gross_pay, 0, ',', '.');
+        return format_money($this->gross_pay);
     }
 
     public function getFormattedTotalAllowancesAttribute()
     {
-        return 'Rp' . number_format($this->total_allowances, 0, ',', '.');
+        return format_money($this->total_allowances);
     }
 
     public function getFormattedTotalDeductionsAttribute()
     {
-        return 'Rp' . number_format($this->total_deductions, 0, ',', '.');
+        return format_money($this->total_deductions);
     }
 
     public function getFormattedNetPayAttribute()
     {
-        return 'Rp' . number_format($this->net_pay, 0, ',', '.');
+        return format_money($this->net_pay);
     }
+
+    public function getTotalEarningsAttribute()
+    {
+        return $this->gross_pay + $this->total_allowances;
+    }
+
+    public function getFormattedTotalEarningsAttribute()
+    {
+        return format_money($this->total_earnings);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setGrossPayAttribute($value)
+    {
+        $this->attributes['gross_pay'] = strip_money_mask($value);
+    }
+
+    public function setTotalAllowancesAttribute($value)
+    {
+        $this->attributes['total_allowances'] = strip_money_mask($value);
+    }
+
+    public function setTotalDeductionsAttribute($value)
+    {
+        $this->attributes['total_deductions'] = strip_money_mask($value);
+    }
+
+    public function setNetPayAttribute($value)
+    {
+        $this->attributes['net_pay'] = strip_money_mask($value);
+    }
 }

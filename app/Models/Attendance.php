@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 
-class Allowance extends Model
+class Attendance extends Model
 {
     use CrudTrait;
 
@@ -15,7 +16,7 @@ class Allowance extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'allowances';
+    protected $table = 'attendances';
 
     // protected $primaryKey = 'id';
     // public $timestamps = false;
@@ -23,7 +24,11 @@ class Allowance extends Model
 
     // protected $fillable = [];
     // protected $hidden = [];
-    // protected $dates = [];
+    protected $dates = [
+        'start_at',
+        'end_at',
+        'shift_date',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -36,16 +41,16 @@ class Allowance extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 
     /*
     |--------------------------------------------------------------------------
     | SCOPES
     |--------------------------------------------------------------------------
     */
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('lft');
-    }
 
     /*
     |--------------------------------------------------------------------------
@@ -58,4 +63,13 @@ class Allowance extends Model
     | MUTATORS
     |--------------------------------------------------------------------------
     */
+    public function setStartAtAttribute($value)
+    {
+        $this->attributes['start_at'] = Date::parse($value);
+    }
+
+    public function setEndAtAttribute($value)
+    {
+        $this->attributes['end_at'] = Date::parse($value);
+    }
 }

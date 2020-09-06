@@ -33,6 +33,109 @@ class PayslipCrudController extends CrudController
         CRUD::setModel(\App\Models\Payslip::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/payslip');
         CRUD::setEntityNameStrings('payslip', 'payslips');
+
+        $this->crud->setShowView('payslip.show');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        $this->crud->hasAccessOrFail('show');
+
+        // get entry ID from Request (makes sure its the last ID for nested resources)
+        $id = $this->crud->getCurrentEntryId() ?? $id;
+
+        // get the info for that entry
+        $this->data['entry'] = $entry = $this->crud->getEntry($id);
+        $this->data['crud'] = $this->crud;
+        $this->data['title'] = $entry->name . '-' . strtoupper($entry->employee->name);
+        $this->data['forceTitle'] = true;
+
+        // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
+        return view($this->crud->getShowView(), $this->data);
+    }
+
+    /**
+     * Store a newly created resource in the database.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store()
+    {
+        $this->crud->hasAccessOrFail('create');
+
+        // execute the FormRequest authorization and validation, if one is required
+        $request = $this->crud->validateRequest();
+
+        $data = $this->crud->getStrippedSaveRequest();
+        $data['gross_pay'] = Employee::find($data['employee_id'])->salary;
+        $data['net_pay'] = $data['gross_pay'];
+
+        // insert item in the db
+        $item = $this->crud->create($data);
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
+    }
+
+    /**
+     * Update the specified resource in the database.
+     *
+     * @return Response
+     */
+    public function update()
+    {
+        $this->crud->hasAccessOrFail('update');
+
+        // execute the FormRequest authorization and validation, if one is required
+        $request = $this->crud->validateRequest();
+
+        $data = $this->crud->getStrippedSaveRequest();
+
+        $allowances = $data['allowances'];
+        $totalAllowances = json_decode($allowances, true);
+        $data['total_allowances'] = array_reduce($totalAllowances, function ($carry, $allowance) {
+            $carry += strip_money_mask($allowance['amount']);
+
+            return $carry;
+        }, $initial = 0);
+
+        $deductions = $data['deductions'];
+        $totalDeductions = json_decode($deductions, true);
+        $data['total_deductions'] = array_reduce($totalDeductions, function ($carry, $deduction) {
+            $carry += strip_money_mask($deduction['amount']);
+
+            return $carry;
+        }, $initial = 0);
+
+        $data['net_pay'] = strip_money_mask($data['gross_pay']) + $data['total_allowances'] - $data['total_deductions'];
+
+        // update the row in the db
+        $item = $this->crud->update(
+            $request->get($this->crud->model->getKeyName()),
+            $data
+        );
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
     }
 
     /**
@@ -43,12 +146,23 @@ class PayslipCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        CRUD::column('name')->label('No. Slip');
+        CRUD::column('period')->label('Period')
+            ->type('date');
+        CRUD::column('employee')->label('Employee')
+            ->type('relationship');
+        CRUD::column('gross_pay')->label('Gross Pay')
+            ->type('number')
+            ->prefix('Rp');
+        CRUD::column('total_allowances')->label('Allowances')
+            ->type('number')
+            ->prefix('Rp');
+        CRUD::column('total_deductions')->label('Deductions')
+            ->type('number')
+            ->prefix('Rp');
+        CRUD::column('net_pay')->label('Net Pay')
+            ->type('number')
+            ->prefix('Rp');
     }
 
     /**
@@ -59,10 +173,11 @@ class PayslipCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        $this->crud->removeSaveActions(['save_and_new', 'save_and_back', 'save_and_preview']);
+
         CRUD::setValidation(PayslipRequest::class);
 
-        CRUD::field('period')->type('date_picker')
-            ->label('Period');
+        CRUD::field('name')->label('No. Slip');
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -71,6 +186,8 @@ class PayslipCrudController extends CrudController
                 return $query->active()->get();
             })
             ->label('Employee');
+        CRUD::field('period')->type('date_picker')
+            ->label('Period');
     }
 
     /**
@@ -81,15 +198,9 @@ class PayslipCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
+        $this->crud->removeSaveActions(['save_and_new', 'save_and_back']);
         CRUD::setUpdateContentClass('col-md-12');
-        CRUD::field('period')->type('date_picker')
-            ->attributes([
-                'disabled' => 'disabled',
-            ])
-            ->wrapper([
-                'class' => 'form-group col-sm-6',
-            ])
-            ->label('Period');
+
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
@@ -104,8 +215,27 @@ class PayslipCrudController extends CrudController
                 'class' => 'form-group col-sm-6',
             ])
             ->label('Employee');
+        CRUD::field('period')->type('date_picker')
+            ->attributes([
+                'disabled' => 'disabled',
+            ])
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ])
+            ->label('Period');
+
+        CRUD::field('name')->label('No. Slip')
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ]);
+        CRUD::field('paid_at')->label('Paid At')
+            ->type('date_picker')
+            ->wrapper([
+                'class' => 'form-group col-sm-6',
+            ]);
 
         CRUD::field('gross_pay')->type('money')
+            ->prefix('Rp')
             ->label('Gross Pay');
 
         CRUD::addField([   // repeatable
@@ -117,13 +247,11 @@ class PayslipCrudController extends CrudController
             ],
             'fields'         => [
                 [
-                    'name'      => 'allowance_id',
-                    'type'      => 'select2',
-                    'entity'    => 'allowances',
-                    'attribute' => 'name',
-                    'model'     => Allowance::class,
-                    'label'     => 'Allowance',
-                    'wrapper'   => ['class' => 'form-group col-6'],
+                    'name'    => 'allowance_id',
+                    'label'   => "Allowance",
+                    'type'    => 'select2_from_array',
+                    'options' => Allowance::ordered()->pluck('name', 'id'),
+                    'wrapper' => ['class' => 'form-group col-6'],
                 ],
                 [
                     'name'    => 'amount',
@@ -148,13 +276,11 @@ class PayslipCrudController extends CrudController
             ],
             'fields'         => [
                 [
-                    'name'      => 'deduction_id',
-                    'type'      => 'select2',
-                    'entity'    => 'deductions',
-                    'attribute' => 'name',
-                    'model'     => Deduction::class,
-                    'label'     => 'Deduction',
-                    'wrapper'   => ['class' => 'form-group col-6'],
+                    'name'    => 'deduction_id',
+                    'label'   => "Deduction",
+                    'type'    => 'select2_from_array',
+                    'options' => Deduction::ordered()->pluck('name', 'id'),
+                    'wrapper' => ['class' => 'form-group col-6'],
                 ],
                 [
                     'name'    => 'amount',
@@ -171,10 +297,14 @@ class PayslipCrudController extends CrudController
             'new_item_label' => 'Add Deduction',
         ]);
 
+        CRUD::field('notes')->label('Notes')
+            ->type('wysiwyg');
+
         CRUD::field('net_pay')->type('money')
             ->attributes([
                 'disabled' => 'disabled',
             ])
+            ->prefix('Rp')
             ->label('Net Pay');
     }
 }
