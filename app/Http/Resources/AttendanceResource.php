@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceResource extends JsonResource
 {
@@ -17,6 +18,7 @@ class AttendanceResource extends JsonResource
             'end_at'             => optional($this->end_at)->format('Y-m-d H:i:s'),
             'formatted_end_at'   => optional($this->end_at)->format('d F Y H:i:s'),
             'comment'            => $this->comment,
+            'selfie'             => asset(Storage::url($this->selfie)),
         ];
     }
 }
