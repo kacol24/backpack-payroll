@@ -85,7 +85,16 @@ class Attendance extends Model
     {
         $attribute_name = "selfie_in";
         $disk = "public";
-        $destination_path = "selfie/" . now()->format('Ym');
+        $destination_path = "selfie";
+
+        $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
+    }
+
+    public function setSelfieOutAttribute($value)
+    {
+        $attribute_name = "selfie_out";
+        $disk = "public";
+        $destination_path = "selfie";
 
         $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
     }
@@ -110,7 +119,7 @@ class Attendance extends Model
         if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
             $file = request()->file($attribute_name);
-            $new_file_name = now()->format('Ymd_H-i-s') . strtoupper($attribute_name) . '_' . strtoupper(Str::slug($this->employee->name)) . '.jpg';
+            $new_file_name = now()->format('Ymd_H-i-s') . '_' . strtoupper(Str::slug($attribute_name)) . '_' . strtoupper(Str::slug($this->employee->name)) . '.jpg';
 
             // 2. Move the new file to the correct path
             $file_path = $file->storeAs($destination_path, $new_file_name, $disk);

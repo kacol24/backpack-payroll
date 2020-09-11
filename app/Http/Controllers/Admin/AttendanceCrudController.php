@@ -71,7 +71,8 @@ class AttendanceCrudController extends CrudController
             ->view('attendance.columns.clock_in')
             ->label('Clock In');
         CRUD::column('end_at')
-            ->type('datetime')
+            ->type('view')
+            ->view('attendance.columns.clock_out')
             ->label('Clock Out');
         CRUD::column('comment')
             ->type('text')
@@ -90,6 +91,10 @@ class AttendanceCrudController extends CrudController
 
         CRUD::field('selfie_in')
             ->label('Selfie In')
+            ->type('upload')
+            ->upload(true);
+        CRUD::field('selfie_out')
+            ->label('Selfie Out')
             ->type('upload')
             ->upload(true);
         CRUD::field('employee_id')->type('select2')
