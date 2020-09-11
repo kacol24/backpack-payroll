@@ -41,6 +41,28 @@ class AttendanceCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->addFilter([
+            'type'  => 'date_range',
+            'name'  => 'shift_date',
+            'label' => 'Shift Date',
+        ],
+            false,
+            function ($value) { // if the filter is active, apply these constraints
+                $dates = json_decode($value);
+                $this->crud->addClause('where', 'shift_date', '>=', $dates->from);
+                $this->crud->addClause('where', 'shift_date', '<=', $dates->to . ' 23:59:59');
+            });
+
+        $this->crud->addFilter([
+            'name'  => 'employee_id',
+            'type'  => 'select2_multiple',
+            'label' => 'Employee',
+        ], function () {
+            return Employee::active()->get()->pluck('name', 'id')->toArray();
+        }, function ($values) { // if the filter is active
+            $this->crud->addClause('whereIn', 'employee_id', json_decode($values));
+        });
+
         CRUD::addColumn([
             'name'  => 'selfie', // The db column name
             'label' => 'Selfie', // Table column heading
