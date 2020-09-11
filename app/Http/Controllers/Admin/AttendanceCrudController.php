@@ -100,7 +100,8 @@ class AttendanceCrudController extends CrudController
 
         CRUD::field('selfie')
             ->label('Selfie')
-            ->type('upload');
+            ->type('upload')
+            ->upload(true);
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)
