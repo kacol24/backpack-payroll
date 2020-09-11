@@ -63,25 +63,16 @@ class AttendanceCrudController extends CrudController
             $this->crud->addClause('whereIn', 'employee_id', json_decode($values));
         });
 
-        CRUD::addColumn([
-            'name'   => 'selfie', // The db column name
-            'label'  => 'Selfie', // Table column heading
-            'type'   => 'image',
-            'prefix' => 'storage/',
-            // image from a different disk (like s3 bucket)
-            // 'disk'   => 'disk-name',
-            // optional width/height if 25px is not ok with you
-            'height' => 'auto',
-            'width'  => '100px',
-        ]);
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
         CRUD::column('start_at')
-            ->type('datetime')
+            ->type('view')
+            ->view('attendance.columns.clock_in')
             ->label('Clock In');
         CRUD::column('end_at')
-            ->type('datetime')
+            ->type('view')
+            ->view('attendance.columns.clock_out')
             ->label('Clock Out');
         CRUD::column('comment')
             ->type('text')
@@ -98,8 +89,12 @@ class AttendanceCrudController extends CrudController
     {
         CRUD::setValidation(AttendanceRequest::class);
 
-        CRUD::field('selfie')
-            ->label('Selfie')
+        CRUD::field('selfie_in')
+            ->label('Selfie In')
+            ->type('upload')
+            ->upload(true);
+        CRUD::field('selfie_out')
+            ->label('Selfie Out')
             ->type('upload')
             ->upload(true);
         CRUD::field('employee_id')->type('select2')
