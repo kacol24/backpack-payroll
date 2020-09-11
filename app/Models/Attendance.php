@@ -5,6 +5,7 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
 
 class Attendance extends Model
 {
@@ -80,11 +81,20 @@ class Attendance extends Model
         $this->attributes['end_at'] = Date::parse($value);
     }
 
-    public function setSelfieAttribute($value)
+    public function setSelfieInAttribute($value)
     {
-        $attribute_name = "selfie";
+        $attribute_name = "selfie_in";
         $disk = "public";
-        $destination_path = "selfie/" . now()->format('Ym');
+        $destination_path = "selfie";
+
+        $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
+    }
+
+    public function setSelfieOutAttribute($value)
+    {
+        $attribute_name = "selfie_out";
+        $disk = "public";
+        $destination_path = "selfie";
 
         $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
     }
@@ -109,7 +119,7 @@ class Attendance extends Model
         if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
             $file = request()->file($attribute_name);
-            $new_file_name = md5($file->getClientOriginalName() . random_int(1, 9999) . time()) . '.jpg';
+            $new_file_name = now()->format('Ymd_H-i-s') . '_' . strtoupper(Str::slug($attribute_name)) . '_' . strtoupper(Str::slug($this->employee->name)) . '.jpg';
 
             // 2. Move the new file to the correct path
             $file_path = $file->storeAs($destination_path, $new_file_name, $disk);

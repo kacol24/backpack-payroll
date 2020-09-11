@@ -25,6 +25,6 @@ Route::namespace('Api')
          Route::apiResource('employees', 'EmployeeController');
          Route::post('employee/{id}/clock-in', [EmployeeAttendanceController::class, 'updateClock'])
               ->name('employee.clock_in');
-         Route::put('employee/{id}/clock-out', [EmployeeAttendanceController::class, 'updateClock'])
+         Route::post('employee/{id}/clock-out', [EmployeeAttendanceController::class, 'updateClock'])
               ->name('employee.clock_out');
      });
