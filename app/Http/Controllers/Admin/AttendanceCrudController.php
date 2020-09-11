@@ -64,16 +64,16 @@ class AttendanceCrudController extends CrudController
         });
 
         CRUD::addColumn([
-            'name'  => 'selfie', // The db column name
-            'label' => 'Selfie', // Table column heading
-            'type'  => 'image',
-            // 'prefix' => 'folder/subfolder/',
+            'name'   => 'selfie', // The db column name
+            'label'  => 'Selfie', // Table column heading
+            'type'   => 'image',
+            'prefix' => 'storage/',
             // image from a different disk (like s3 bucket)
             // 'disk'   => 'disk-name',
             // optional width/height if 25px is not ok with you
-            // 'height' => '30px',
-            // 'width'  => '30px',
-        ],);
+            'height' => 'auto',
+            'width'  => '100px',
+        ]);
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
