@@ -80,9 +80,9 @@ class Attendance extends Model
         $this->attributes['end_at'] = Date::parse($value);
     }
 
-    public function setSelfieAttribute($value)
+    public function setSelfieInAttribute($value)
     {
-        $attribute_name = "selfie";
+        $attribute_name = "selfie_in";
         $disk = "public";
         $destination_path = "selfie/" . now()->format('Ym');
 
