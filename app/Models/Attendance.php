@@ -5,6 +5,7 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
 
 class Attendance extends Model
 {
@@ -109,7 +110,7 @@ class Attendance extends Model
         if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
             $file = request()->file($attribute_name);
-            $new_file_name = md5($file->getClientOriginalName() . random_int(1, 9999) . time()) . '.jpg';
+            $new_file_name = now()->format('Ymd_H-i-s') . strtoupper($attribute_name) . '_' . strtoupper(Str::slug($this->employee->name)) . '.jpg';
 
             // 2. Move the new file to the correct path
             $file_path = $file->storeAs($destination_path, $new_file_name, $disk);

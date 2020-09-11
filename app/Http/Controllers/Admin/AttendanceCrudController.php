@@ -98,8 +98,8 @@ class AttendanceCrudController extends CrudController
     {
         CRUD::setValidation(AttendanceRequest::class);
 
-        CRUD::field('selfie')
-            ->label('Selfie')
+        CRUD::field('selfie_in')
+            ->label('Selfie In')
             ->type('upload')
             ->upload(true);
         CRUD::field('employee_id')->type('select2')
