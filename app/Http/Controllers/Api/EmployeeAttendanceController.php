@@ -12,7 +12,6 @@ class EmployeeAttendanceController extends Controller
 {
     public function updateClock(Request $request, $employeeId)
     {
-        \DB::beginTransaction();
         $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
                            ->latest()
                            ->whereNull('end_at')
@@ -21,12 +20,12 @@ class EmployeeAttendanceController extends Controller
                            })
                            ->first();
         if ($shift) {
+            \DB::beginTransaction();
             $shift->update([
                 'end_at' => now(),
             ]);
             $shift->selfie_out = $request->file('selfie_out');
             $shift->save();
-
             \DB::commit();
 
             return response()->json(new EmployeeResource($shift->employee), 200);
@@ -34,6 +33,7 @@ class EmployeeAttendanceController extends Controller
 
         $employee = Employee::find($employeeId);
 
+        \DB::beginTransaction()
         $attendance = $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
