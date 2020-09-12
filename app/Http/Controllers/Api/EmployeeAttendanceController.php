@@ -33,7 +33,7 @@ class EmployeeAttendanceController extends Controller
 
         $employee = Employee::find($employeeId);
 
-        \DB::beginTransaction()
+        \DB::beginTransaction();
         $attendance = $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
