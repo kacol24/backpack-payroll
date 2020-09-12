@@ -27,4 +27,6 @@ Route::namespace('Api')
               ->name('employee.clock_in');
          Route::post('employee/{id}/clock-out', [EmployeeAttendanceController::class, 'updateClock'])
               ->name('employee.clock_out');
+
+         Route::apiResource('attendances', 'AttendanceController');
      });
