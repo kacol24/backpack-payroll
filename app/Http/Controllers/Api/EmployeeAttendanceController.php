@@ -20,27 +20,23 @@ class EmployeeAttendanceController extends Controller
                            })
                            ->first();
         if ($shift) {
-            \DB::beginTransaction();
             $shift->update([
                 'end_at' => now(),
             ]);
             $shift->selfie_out = $request->file('selfie_out');
             $shift->save();
-            \DB::commit();
 
             return response()->json(new EmployeeResource($shift->employee), 200);
         }
 
         $employee = Employee::find($employeeId);
 
-        \DB::beginTransaction();
         $attendance = $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
         ]);
         $attendance->selfie_in = $request->file('selfie_in');
         $attendance->save();
-        \DB::commit();
 
         return response()->json(new EmployeeResource($employee), 201);
     }
