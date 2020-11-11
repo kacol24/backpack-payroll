@@ -187,6 +187,10 @@ class PayslipCrudController extends CrudController
             })
             ->label('Employee');
         CRUD::field('period')->type('date_picker')
+            ->date_picker_options([
+                'format'      => 'MM yyyy',
+                'minViewMode' => 'year',
+            ])
             ->label('Period');
     }
 
