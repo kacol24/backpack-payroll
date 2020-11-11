@@ -148,6 +148,7 @@ class PayslipCrudController extends CrudController
     {
         CRUD::column('name')->label('No. Slip');
         CRUD::column('period')->label('Period')
+            ->format('MMMM YYYY')
             ->type('date');
         CRUD::column('employee')->label('Employee')
             ->type('relationship');
