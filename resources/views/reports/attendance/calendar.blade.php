@@ -25,6 +25,18 @@
         var calendarEl = document.getElementById('attendance_calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
+            eventDidMount: function(info) {
+                $(info.el).tooltip({
+                    title: info.event.extendedProps.description,
+                    html: true
+                });
+                // var tooltip = new Tooltip(info.el, {
+                //     title: info.event.extendedProps.description,
+                //     placement: 'top',
+                //     trigger: 'hover',
+                //     container: 'body'
+                // });
+            },
             events: '{{ route('api.attendances.index') }}',
             loading: function(isLoading) {
                 if (isLoading) {
@@ -32,8 +44,7 @@
                 } else {
                     $('.overlay').hide();
                 }
-            },
-            selectable: true
+            }
         });
         calendar.render();
     </script>

@@ -21,9 +21,10 @@ class AttendanceFullcalendarResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'title' => $this->employee->name,
-            'start' => $this->start_at,
-            'end'   => $this->end_at,
+            'title'       => $this->employee->name,
+            'start'       => $this->start_at,
+            'end'         => $this->end_at,
+            'description' => 'In: ' . optional($this->start_at)->format('H:i:s') . '<br>Out: ' . optional($this->end_at)->format('H:i:s'),
         ];
     }
 }
