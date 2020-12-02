@@ -27,18 +27,26 @@
     <script>
         var calendarEl = document.getElementById('attendance_calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            views: {
+                listWeek: {buttonText: 'list week'},
+                listMonth: {buttonText: 'list month'}
+            },
+            firstDay: 1,
+            businessHours: {
+                startTime: '12:00',
+                endTime: '22:00'
+            },
+            headerToolbar: {
+                left: 'dayGridMonth,timeGridWeek,listMonth,listWeek',
+                center: 'title',
+                right: 'prev,next'
+            },
             initialView: 'dayGridMonth',
             eventDidMount: function(info) {
                 $(info.el).tooltip({
                     title: info.event.extendedProps.description,
                     html: true
                 });
-                // var tooltip = new Tooltip(info.el, {
-                //     title: info.event.extendedProps.description,
-                //     placement: 'top',
-                //     trigger: 'hover',
-                //     container: 'body'
-                // });
             },
             events: '{{ route('api.attendances.index') }}',
             loading: function(isLoading) {
