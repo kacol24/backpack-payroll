@@ -6,8 +6,10 @@ use App\Http\Requests\PayslipRequest;
 use App\Models\Allowance;
 use App\Models\Deduction;
 use App\Models\Employee;
+use App\Models\Payslip;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Carbon\Carbon;
 
 /**
  * Class PayslipCrudController
@@ -146,8 +148,61 @@ class PayslipCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // select2_multiple filter
+        $this->crud->addFilter([
+            'name'  => 'year',
+            'type'  => 'select2_multiple',
+            'label' => 'Year',
+        ], function () {
+            return Payslip::all()->groupBy(function ($value) {
+                return $value->period->year;
+            })->map(function ($value, $index) {
+                return $index;
+            })->toArray();
+        }, function ($values) { // if the filter is active
+            foreach (json_decode($values) as $index => $year) {
+                if ($index == 0) {
+                    $this->crud->addClause('whereYear', 'period', $year);
+                } else {
+                    $this->crud->addClause('orWhereYear', 'period', $year);
+                }
+            }
+        });
+
+        // select2_multiple filter
+        $this->crud->addFilter([
+            'name'  => 'month',
+            'type'  => 'select2_multiple',
+            'label' => 'Month',
+        ], function () {
+            return Payslip::all()->groupBy(function ($value) {
+                return $value->period->month;
+            })->map(function ($value, $index) {
+                return Carbon::createFromDate(null, $index)->translatedFormat('F');
+            })->toArray();
+        }, function ($values) {
+            foreach (json_decode($values) as $index => $month) {
+                if ($index == 0) {
+                    $this->crud->addClause('whereMonth', 'period', $month);
+                } else {
+                    $this->crud->addClause('orWhereMonth', 'period', $month);
+                }
+            }
+        });
+
+        $this->crud->addFilter([
+            'name'  => 'employee_id',
+            'type'  => 'select2_multiple',
+            'label' => 'Employee',
+        ], function () {
+            return Employee::active()->get()->pluck('name', 'id')->toArray();
+        }, function ($values) { // if the filter is active
+            $this->crud->addClause('whereIn', 'employee_id', json_decode($values));
+        });
+
         CRUD::column('name')->label('No. Slip');
         CRUD::column('period')->label('Period')
+            ->format('MMMM YYYY')
             ->type('date');
         CRUD::column('employee')->label('Employee')
             ->type('relationship');
@@ -187,6 +242,10 @@ class PayslipCrudController extends CrudController
             })
             ->label('Employee');
         CRUD::field('period')->type('date_picker')
+            ->date_picker_options([
+                'format'      => 'MM yyyy',
+                'minViewMode' => 'year',
+            ])
             ->label('Period');
     }
 
