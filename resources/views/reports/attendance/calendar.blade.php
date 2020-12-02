@@ -16,6 +16,29 @@
             align-items: center;
             justify-content: center;
         }
+
+        .fc-footer-toolbar {
+            display: none !important;
+        }
+
+        @media (max-width: 575.98px) {
+            .fc-header-toolbar {
+                flex-direction: column;
+                margin-bottom: 0 !important;
+            }
+
+            .fc-header-toolbar .fc-toolbar-chunk {
+                margin-bottom: 1rem;
+            }
+
+            .fc-header-toolbar .fc-toolbar-chunk:last-child {
+                display: none;
+            }
+
+            .fc-footer-toolbar {
+                display: flex !important;
+            }
+        }
     </style>
 @endpush
 
@@ -37,9 +60,13 @@
                 endTime: '22:00'
             },
             headerToolbar: {
-                left: 'dayGridMonth,timeGridWeek,listMonth,listWeek',
-                center: 'title',
+                center: 'dayGridMonth,timeGridWeek,listMonth,listWeek',
+                left: 'title',
                 right: 'prev,next'
+            },
+            footerToolbar: {
+                left: 'prev',
+                right: 'next'
             },
             initialView: 'dayGridMonth',
             eventDidMount: function(info) {
@@ -74,7 +101,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card mx-n3">
                 <div class="card-body position-relative">
                     <div id="attendance_calendar"></div>
                     <div class="overlay">
