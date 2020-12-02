@@ -73,12 +73,16 @@ class Attendance extends Model
     */
     public function setStartAtAttribute($value)
     {
-        $this->attributes['start_at'] = Date::parse($value);
+        if ($value) {
+            $this->attributes['start_at'] = Date::parse($value);
+        }
     }
 
     public function setEndAtAttribute($value)
     {
-        $this->attributes['end_at'] = Date::parse($value);
+        if ($value) {
+            $this->attributes['end_at'] = Date::parse($value);
+        }
     }
 
     public function setSelfieInAttribute($value)
