@@ -23,4 +23,6 @@ Route::group([
     Route::crud('attendance', 'AttendanceCrudController');
     Route::get('employee/{id}/clock-in', [EmployeeAttendanceController::class, 'updateClock'])->name('employee.clock_in');
     Route::get('employee/{id}/clock-out', [EmployeeAttendanceController::class, 'updateClock'])->name('employee.clock_out');
+
+    Route::view('attendance-calendar', 'reports.attendance.calendar')->name('report.calendar');
 }); // this should be the absolute last line of this file

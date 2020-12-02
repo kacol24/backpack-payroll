@@ -6,6 +6,7 @@ use App\Http\Requests\AttendanceRequest;
 use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Carbon\Carbon;
 
 /**
  * Class AttendanceCrudController
@@ -49,8 +50,8 @@ class AttendanceCrudController extends CrudController
             false,
             function ($value) { // if the filter is active, apply these constraints
                 $dates = json_decode($value);
-                $this->crud->addClause('where', 'shift_date', '>=', $dates->from);
-                $this->crud->addClause('where', 'shift_date', '<=', $dates->to . ' 23:59:59');
+                $this->crud->addClause('where', 'shift_date', '>=', Carbon::parse($dates->from)->startOfDay());
+                $this->crud->addClause('where', 'shift_date', '<=', Carbon::parse($dates->to)->endOfDay());
             });
 
         $this->crud->addFilter([
