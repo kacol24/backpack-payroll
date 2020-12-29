@@ -37,6 +37,7 @@ class PayslipCrudController extends CrudController
         CRUD::setEntityNameStrings('payslip', 'payslips');
 
         $this->crud->setShowView('payslip.show');
+        $this->crud->setListView('payslip.list');
     }
 
     /**
