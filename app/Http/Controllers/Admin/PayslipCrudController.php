@@ -208,15 +208,19 @@ class PayslipCrudController extends CrudController
             ->type('relationship');
         CRUD::column('gross_pay')->label('Gross Pay')
             ->type('number')
+            ->thousands_sep('.')
             ->prefix('Rp');
         CRUD::column('total_allowances')->label('Allowances')
             ->type('number')
+            ->thousands_sep('.')
             ->prefix('Rp');
         CRUD::column('total_deductions')->label('Deductions')
             ->type('number')
+            ->thousands_sep('.')
             ->prefix('Rp');
         CRUD::column('net_pay')->label('Net Pay')
             ->type('number')
+            ->thousands_sep('.')
             ->prefix('Rp');
     }
 
