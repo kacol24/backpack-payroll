@@ -194,7 +194,11 @@
                 working_end: null,
 
                 calendarDelta: function() {
-                    return Math.abs(moment(this.calendar_start).diff(this.calendar_end, 'days'));
+                    if (! this.calendar_start || ! this.calendar_end) {
+                        return 0;
+                    }
+
+                    return Math.abs(moment(this.calendar_start).diff(this.calendar_end, 'days')) + 1;
                 },
 
                 workingDelta: function() {
