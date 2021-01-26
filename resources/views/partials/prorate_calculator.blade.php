@@ -45,9 +45,9 @@
                                         <input type="hidden" name="calendar_end"
                                                x-model="calendar_end">
                                         <div class="input-group-append">
-                                                            <span class="input-group-text">
-                                                                <span class="la la-calendar"></span>
-                                                            </span>
+                                            <div class="input-group-text">
+                                                <span class="la la-calendar"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -63,9 +63,9 @@
                                         <input type="hidden" name="working_end"
                                                x-model="working_end">
                                         <div class="input-group-append">
-                                                            <span class="input-group-text">
-                                                                <span class="la la-calendar"></span>
-                                                            </span>
+                                            <div class="input-group-text">
+                                                <span class="la la-calendar"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -80,6 +80,11 @@
                                     </dt>
                                     <dd>
                                         <span x-text="workingDelta()"></span>
+                                        <template x-if="working_start && working_end">
+                                            (<span x-text="moment(working_start).format('DD MMM YYYY')"></span>
+                                            -
+                                            <span x-text="moment(working_end).format('DD MMM YYYY')"></span>)
+                                        </template>
                                     </dd>
                                 </dl>
                                 <dl>
@@ -88,6 +93,11 @@
                                     </dt>
                                     <dd>
                                         <span x-text="calendarDelta()"></span>
+                                        <template x-if="calendar_start && calendar_end">
+                                            (<span x-text="moment(calendar_start).format('DD MMM YYYY')"></span>
+                                            -
+                                            <span x-text="moment(calendar_end).format('DD MMM YYYY')"></span>)
+                                        </template>
                                     </dd>
                                 </dl>
                                 <dl>
@@ -95,7 +105,11 @@
                                         Prorate gaji pokok:
                                     </dt>
                                     <dd>
-                                        Rp<span x-text="prorate()"></span>
+                                        Rp<span x-text="number_format(prorate(), 0, ',', '.')"></span>
+                                        <template x-if="prorate() > 0">
+                                            (Dari gaji pokok:
+                                            <span x-text="number_format(salary, 0, ',', '.')"></span>)
+                                        </template>
                                     </dd>
                                 </dl>
                             </fieldset>
@@ -188,14 +202,14 @@
         function CalculatorApp() {
             return {
                 salary: null,
-                calendar_start: '{{ now()->format('Y-m-d') }}',
-                calendar_end: '{{ now()->format('Y-m-d') }}',
+                calendar_start: null,
+                calendar_end: null,
                 working_start: null,
                 working_end: null,
 
                 calendarDelta: function() {
-                    if (! this.calendar_start || ! this.calendar_end) {
-                        return 0;
+                    if (!this.calendar_start || !this.calendar_end) {
+                        return '-';
                     }
 
                     return Math.abs(moment(this.calendar_start).diff(this.calendar_end, 'days')) + 1;
@@ -203,7 +217,7 @@
 
                 workingDelta: function() {
                     if (!this.working_start || !this.working_end) {
-                        return 0;
+                        return '-';
                     }
 
                     return Math.abs(moment(this.working_start).diff(this.working_end, 'days')) + 1;
@@ -213,12 +227,7 @@
                     if (!this.salary || !this.workingDelta() || !this.calendarDelta()) {
                         return ' -';
                     }
-                    return number_format(
-                        this.salary * this.workingDelta() / this.calendarDelta(),
-                        0,
-                        ',',
-                        '.'
-                    );
+                    return this.salary * this.workingDelta() / this.calendarDelta();
                 }
             };
         }
