@@ -90,18 +90,23 @@
 
 @section('header')
     <div class="container-fluid">
-        <h2>
-            <span class="text-capitalize">
-                Kalendar Absensi
-            </span>
-        </h2>
+        <div class="row justify-content-between">
+            <div class="col-md-auto">
+                <h2 class="text-capitalize">
+                    Kalendar Absensi
+                </h2>
+            </div>
+            <div class="col-md-auto text-right">
+                @include('partials.prorate_calculator')
+            </div>
+        </div>
     </div>
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card mx-n3">
+            <div class="card">
                 <div class="card-body position-relative">
                     <div id="attendance_calendar"></div>
                     <div class="overlay">

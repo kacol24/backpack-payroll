@@ -211,7 +211,9 @@
                         <strong>
                             Notes:
                         </strong>
-                        {!! $entry->notes !!}
+                        <small>
+                            {!! $entry->notes !!}
+                        </small>
                     </div>
                 </div>
             </div>
