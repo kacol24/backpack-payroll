@@ -74,44 +74,32 @@
                         <div class="col-12">
                             <fieldset>
                                 <legend>Results</legend>
-                                <dl>
-                                    <dt>
-                                        Total hari kerja:
-                                    </dt>
-                                    <dd>
-                                        <span x-text="workingDelta()"></span>
-                                        <template x-if="working_start && working_end">
-                                            (<span x-text="moment(working_start).format('DD MMM YYYY')"></span>
-                                            -
-                                            <span x-text="moment(working_end).format('DD MMM YYYY')"></span>)
-                                        </template>
-                                    </dd>
-                                </dl>
-                                <dl>
-                                    <dt>
-                                        Total hari kalender:
-                                    </dt>
-                                    <dd>
-                                        <span x-text="calendarDelta()"></span>
-                                        <template x-if="calendar_start && calendar_end">
-                                            (<span x-text="moment(calendar_start).format('DD MMM YYYY')"></span>
-                                            -
-                                            <span x-text="moment(calendar_end).format('DD MMM YYYY')"></span>)
-                                        </template>
-                                    </dd>
-                                </dl>
-                                <dl>
-                                    <dt>
-                                        Prorate gaji pokok:
-                                    </dt>
-                                    <dd>
-                                        Rp<span x-text="number_format(prorate(), 0, ',', '.')"></span>
-                                        <template x-if="prorate() > 0">
-                                            (Dari gaji pokok:
-                                            <span x-text="number_format(salary, 0, ',', '.')"></span>)
-                                        </template>
-                                    </dd>
-                                </dl>
+                                <p>
+                                    <strong>Total hari kerja:</strong><br>
+                                    <span x-text="workingDelta()"></span>
+                                    <template x-if="working_start && working_end">
+                                        (<span x-text="moment(working_start).format('DD MMM YYYY')"></span>
+                                        -
+                                        <span x-text="moment(working_end).format('DD MMM YYYY')"></span>)
+                                    </template>
+                                </p>
+                                <p>
+                                    <strong>Total hari kalender:</strong><br>
+                                    <span x-text="calendarDelta()"></span>
+                                    <template x-if="calendar_start && calendar_end">
+                                        (<span x-text="moment(calendar_start).format('DD MMM YYYY')"></span>
+                                        -
+                                        <span x-text="moment(calendar_end).format('DD MMM YYYY')"></span>)
+                                    </template>
+                                </p>
+                                <p>
+                                    <strong>Prorate gaji pokok:</strong><br>
+                                    Rp<span x-text="number_format(prorate(), 0, ',', '.')"></span>
+                                    <template x-if="prorate() > 0">
+                                        (Dari gaji pokok:
+                                        <span x-text="'Rp' + number_format(salary, 0, ',', '.')"></span>)
+                                    </template>
+                                </p>
                             </fieldset>
                         </div>
                     </div>
