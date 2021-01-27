@@ -1,113 +1,7 @@
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#prorateModal">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#prorateModal"
+        onclick="var value = $('#gross_pay').val(); value ? money.setRawValue(value.replace(/\./g, '')) : false">
     Prorate Calculator
 </button>
-
-<div class="modal fade" id="prorateModal" tabindex="-1" data-backdrop="static" data-keyboard="false"
-     aria-hidden="true" x-data="CalculatorApp()"
-     x-on:calendar-changed.window="calendar_start = $event.detail.start_date; calendar_end = $event.detail.end_date; working_end = $event.detail.end_date"
-     x-on:working-changed.window="working_start = $event.detail.start_date; working_end = $event.detail.end_date"
-     x-on:salary-changed.window="salary = $event.detail.value">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Calculator</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-left">
-                <div class="container-fluid px-0">
-                    <div class="row mx-n3">
-                        <div class="col-12">
-                            <fieldset>
-                                <div class="form-group">
-                                    <label for="">
-                                        Gaji Pokok
-                                    </label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">
-                                                                Rp
-                                                            </span>
-                                        </div>
-                                        <input type="tel" class="form-control text-right" data-money>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">
-                                        Periode Gaji
-                                    </label>
-                                    <div class="input-group date">
-                                        <input type="text" class="form-control rangepicker"
-                                               data-updates="calendar">
-                                        <input type="hidden" name="calendar_start"
-                                               x-model="calendar_start">
-                                        <input type="hidden" name="calendar_end"
-                                               x-model="calendar_end">
-                                        <div class="input-group-append">
-                                            <div class="input-group-text">
-                                                <span class="la la-calendar"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">
-                                        Periode Kerja
-                                    </label>
-                                    <div class="input-group date">
-                                        <input type="text" class="form-control rangepicker"
-                                               data-updates="working">
-                                        <input type="hidden" name="working_start"
-                                               x-model="working_start">
-                                        <input type="hidden" name="working_end"
-                                               x-model="working_end">
-                                        <div class="input-group-append">
-                                            <div class="input-group-text">
-                                                <span class="la la-calendar"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="col-12">
-                            <fieldset>
-                                <legend>Results</legend>
-                                <p>
-                                    <strong>Total hari kerja:</strong><br>
-                                    <span x-text="workingDelta()"></span>
-                                    <template x-if="working_start && working_end">
-                                        (<span x-text="moment(working_start).format('DD MMM YYYY')"></span>
-                                        -
-                                        <span x-text="moment(working_end).format('DD MMM YYYY')"></span>)
-                                    </template>
-                                </p>
-                                <p>
-                                    <strong>Total hari kalender:</strong><br>
-                                    <span x-text="calendarDelta()"></span>
-                                    <template x-if="calendar_start && calendar_end">
-                                        (<span x-text="moment(calendar_start).format('DD MMM YYYY')"></span>
-                                        -
-                                        <span x-text="moment(calendar_end).format('DD MMM YYYY')"></span>)
-                                    </template>
-                                </p>
-                                <p>
-                                    <strong>Prorate gaji pokok:</strong><br>
-                                    Rp<span x-text="number_format(prorate(), 0, ',', '.')"></span>
-                                    <template x-if="prorate() > 0">
-                                        (Dari gaji pokok:
-                                        <span x-text="'Rp' + number_format(salary, 0, ',', '.')"></span>)
-                                    </template>
-                                </p>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 @push('after_styles')
     <script type="module" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
@@ -117,6 +11,118 @@
 @endpush
 
 @push('after_scripts')
+    <div class="modal fade" id="prorateModal" tabindex="-1" data-backdrop="static" data-keyboard="false"
+         aria-hidden="true" x-data="CalculatorApp()"
+         x-on:calendar-changed.window="calendar_start = $event.detail.start_date; calendar_end = $event.detail.end_date; working_end = $event.detail.end_date"
+         x-on:working-changed.window="working_start = $event.detail.start_date; working_end = $event.detail.end_date"
+         x-on:salary-changed.window="salary = $event.detail.value">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Calculator</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-left">
+                    <div class="container-fluid px-0">
+                        <div class="row mx-n3">
+                            <div class="col-12">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label for="gaji_pokok">
+                                            Gaji Pokok
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    Rp
+                                                </span>
+                                            </div>
+                                            <input type="tel" class="form-control text-right prorate-money" id="gaji_pokok">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="periode_gaji">
+                                            Periode Gaji
+                                        </label>
+                                        <div class="input-group date">
+                                            <input type="text" class="form-control rangepicker"
+                                                   data-updates="calendar" id="periode_gaji">
+                                            <input type="hidden" name="calendar_start"
+                                                   x-model="calendar_start">
+                                            <input type="hidden" name="calendar_end"
+                                                   x-model="calendar_end">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="la la-calendar"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="periode_kerja">
+                                            Periode Kerja
+                                        </label>
+                                        <div class="input-group date">
+                                            <input type="text" class="form-control rangepicker"
+                                                   data-updates="working" id="periode_kerja">
+                                            <input type="hidden" name="working_start"
+                                                   x-model="working_start">
+                                            <input type="hidden" name="working_end"
+                                                   x-model="working_end">
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <span class="la la-calendar"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-12">
+                                <fieldset>
+                                    <legend>Results</legend>
+                                    <p>
+                                        <strong>Total hari kerja:</strong><br>
+                                        <span x-text="workingDelta()"></span>
+                                        <template x-if="working_start && working_end">
+                                            <span>
+                                                (<span
+                                                    x-text="moment(working_start).format('DD MMM YYYY')"></span>-<span
+                                                    x-text="moment(working_end).format('DD MMM YYYY')"></span>)
+                                            </span>
+                                        </template>
+                                    </p>
+                                    <p>
+                                        <strong>Total hari kalender:</strong><br>
+                                        <span x-text="calendarDelta()"></span>
+                                        <template x-if="calendar_start && calendar_end">
+                                            <span>
+                                                (<span
+                                                    x-text="moment(calendar_start).format('DD MMM YYYY')"></span>-<span
+                                                    x-text="moment(calendar_end).format('DD MMM YYYY')"></span>)
+                                            </span>
+                                        </template>
+                                    </p>
+                                    <p>
+                                        <strong>Prorate gaji pokok:</strong><br>
+                                        Rp<span x-text="number_format(prorate(), 0, ',', '.')"></span>
+                                        <template x-if="prorate() > 0">
+                                            <span>
+                                                (Dari gaji pokok: <span
+                                                    x-text="'Rp' + number_format(salary, 0, ',', '.')"></span>)
+                                            </span>
+                                        </template>
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript" src="{{ asset('packages/moment/min/moment-with-locales.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('packages/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
@@ -145,22 +151,20 @@
             return s.join(dec);
         }
 
-        $('[data-money]').toArray().forEach(function(field) {
-            new Cleave(field, {
-                numeral: true,
-                numeralDecimalMark: ',',
-                delimiter: '.',
-                numeralDecimalScale: 0,
-                swapHiddenInput: true,
-                onValueChanged: function(e) {
-                    var event = new CustomEvent('salary-changed', {
-                        detail: {
-                            value: e.target.rawValue
-                        }
-                    });
-                    window.dispatchEvent(event);
-                }
-            });
+        var money = new Cleave('.prorate-money', {
+            numeral: true,
+            numeralDecimalMark: ',',
+            delimiter: '.',
+            numeralDecimalScale: 0,
+            swapHiddenInput: true,
+            onValueChanged: function(e) {
+                var event = new CustomEvent('salary-changed', {
+                    detail: {
+                        value: e.target.rawValue
+                    }
+                });
+                window.dispatchEvent(event);
+            }
         });
 
         $('#prorateModal').on('shown.bs.modal', function() {
