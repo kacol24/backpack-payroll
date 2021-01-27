@@ -16,7 +16,7 @@
             @include('crud::fields.inc.attributes')
         >
         @if(isset($field['suffix']))
-            <div class="input-group-append"><span class="input-group-text">{!! $field['suffix'] !!}</span></div> @endif
+            <div class="input-group-append">{!! $field['suffix'] !!}</div> @endif
 
         @if(isset($field['prefix']) || isset($field['suffix'])) </div> @endif
 
