@@ -9,7 +9,7 @@
             <div class="input-group-prepend"><span class="input-group-text">{!! $field['prefix'] !!}</span></div> @endif
         <input
             type="tel"
-            data-money data-thousands="." data-decimal="," data-precision="0"
+            data-money
             data-init-function="initMaskMoneyElement"
             name="{{ $field['name'] }}"
             value="{{ old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '' }}"
@@ -39,12 +39,14 @@
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-        <script src="https://cdn.jsdelivr.net/npm/jquery-maskmoney@3.0.2/dist/jquery.maskMoney.min.js"></script>
         <script>
-            $('[data-money]').maskMoney().maskMoney('mask');
-
             function initMaskMoneyElement(element) {
-                element.maskMoney().maskMoney('mask');
+                new Cleave(element, {
+                    numeral: true,
+                    numeralDecimalMark: ',',
+                    delimiter: '.',
+                    numeralDecimalScale: 0
+                });
             }
         </script>
     @endpush

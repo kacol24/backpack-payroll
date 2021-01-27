@@ -39,7 +39,8 @@
                                                     Rp
                                                 </span>
                                             </div>
-                                            <input type="tel" class="form-control text-right prorate-money" id="gaji_pokok">
+                                            <input type="tel" class="form-control text-right prorate-money"
+                                                   id="gaji_pokok">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -125,7 +126,6 @@
     </div>
     <script type="text/javascript" src="{{ asset('packages/moment/min/moment-with-locales.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('packages/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
     <script>
         function number_format(number, decimals, dec_point, thousands_sep) {
             // Strip all characters but numerical ones.
@@ -156,7 +156,6 @@
             numeralDecimalMark: ',',
             delimiter: '.',
             numeralDecimalScale: 0,
-            swapHiddenInput: true,
             onValueChanged: function(e) {
                 var event = new CustomEvent('salary-changed', {
                     detail: {
