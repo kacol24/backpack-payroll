@@ -294,6 +294,9 @@ class PayslipCrudController extends CrudController
             ]);
         CRUD::field('paid_at')->label('Paid At')
             ->type('date_picker')
+            ->date_picker_options([
+                'todayBtn' => 'linked',
+            ])
             ->wrapper([
                 'class' => 'form-group col-sm-6',
             ]);
