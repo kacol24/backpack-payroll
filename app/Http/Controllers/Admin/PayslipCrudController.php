@@ -294,12 +294,19 @@ class PayslipCrudController extends CrudController
             ]);
         CRUD::field('paid_at')->label('Paid At')
             ->type('date_picker')
+            ->date_picker_options([
+                'todayBtn' => 'linked',
+            ])
             ->wrapper([
                 'class' => 'form-group col-sm-6',
             ]);
 
         CRUD::field('gross_pay')->type('money')
             ->prefix('Rp')
+            ->suffix(view('partials.prorate_calculator'))
+            ->attributes([
+                'id' => 'gross_pay'
+            ])
             ->label('Gross Pay');
 
         CRUD::addField([   // repeatable
