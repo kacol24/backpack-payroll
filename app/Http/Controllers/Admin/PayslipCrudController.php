@@ -269,13 +269,9 @@ class PayslipCrudController extends CrudController
         $this->crud->removeSaveActions(['save_and_new', 'save_and_back']);
         CRUD::setUpdateContentClass('col-md-12');
 
-        CRUD::field('employee_id')->type('select2')
-            ->entity('employee')
-            ->model(Employee::class)
-            ->attribute('name')
-            ->options(function ($query) {
-                return $query->active()->get();
-            })
+        CRUD::field('employee_id')
+            ->type('hidden');
+        CRUD::field('employee_name')
             ->attributes([
                 'disabled' => 'disabled',
             ])
