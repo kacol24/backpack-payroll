@@ -46,7 +46,8 @@ class EmployeeCrudController extends CrudController
     {
         CRUD::column('employee_number');
         CRUD::column('name');
-        CRUD::column('start_date');
+        CRUD::column('start_date')
+            ->type('date');
         CRUD::column('bio');
         CRUD::column('salary')
             ->type('number')
