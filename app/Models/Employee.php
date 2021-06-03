@@ -99,6 +99,35 @@ class Employee extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getTotalAllowancesAttribute()
+    {
+        if (! $this->allowances) {
+            return 0;
+        }
+
+        $totalAllowances = json_decode(json_encode($this->allowances), true);
+
+        return array_reduce($totalAllowances, function ($carry, $allowance) {
+            $carry += strip_money_mask($allowance['amount']);
+
+            return $carry;
+        }, $initial = 0);
+    }
+
+    public function getTotalDeductionsAttribute()
+    {
+        if (! $this->deductions) {
+            return 0;
+        }
+
+        $totalDeductions = json_decode(json_encode($this->deductions), true);
+
+        return array_reduce($totalDeductions, function ($carry, $deduction) {
+            $carry += strip_money_mask($deduction['amount']);
+
+            return $carry;
+        }, $initial = 0);
+    }
 
     /*
     |--------------------------------------------------------------------------

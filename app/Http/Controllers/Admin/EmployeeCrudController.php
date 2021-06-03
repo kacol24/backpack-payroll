@@ -30,7 +30,7 @@ class EmployeeCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(\App\Models\Employee::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/employee');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/employee');
         CRUD::setEntityNameStrings('employee', 'employees');
 
         $this->crud->addButtonFromModelFunction('line', 'attendance_button', 'attendanceButtons', 'beginning');
@@ -44,12 +44,24 @@ class EmployeeCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        CRUD::column('employee_number');
+        CRUD::column('name');
+        CRUD::column('start_date');
+        CRUD::column('bio');
+        CRUD::column('salary')
+            ->type('number')
+            ->thousands_sep('.')
+            ->prefix('Rp');
+        CRUD::column('total_allowances')->label('Allowances')
+            ->type('number')
+            ->thousands_sep('.')
+            ->prefix('Rp');
+        CRUD::column('total_deductions')->label('Deductions')
+            ->type('number')
+            ->thousands_sep('.')
+            ->prefix('Rp');
+        CRUD::column('is_active')
+            ->type('check');
     }
 
     /**
