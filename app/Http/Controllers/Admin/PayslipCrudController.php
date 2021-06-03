@@ -77,8 +77,13 @@ class PayslipCrudController extends CrudController
         $request = $this->crud->validateRequest();
 
         $data = $this->crud->getStrippedSaveRequest();
-        $data['gross_pay'] = Employee::find($data['employee_id'])->salary;
+        $employee = Employee::find($data['employee_id']);
+
+        $data['gross_pay'] = $employee->salary;
         $data['net_pay'] = $data['gross_pay'];
+        $data['name'] = 'SALARY/' . Carbon::parse($request->period)->format('Y/m/') . $employee->employee_number;
+        $data['allowances'] = $employee->allowances;
+        $data['deductions'] = $employee->deductions;
 
         // insert item in the db
         $item = $this->crud->create($data);
@@ -237,7 +242,6 @@ class PayslipCrudController extends CrudController
 
         CRUD::setValidation(PayslipRequest::class);
 
-        CRUD::field('name')->label('No. Slip');
         CRUD::field('employee_id')->type('select2')
             ->entity('employee')
             ->model(Employee::class)

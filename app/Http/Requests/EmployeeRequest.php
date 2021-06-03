@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EmployeeRequest extends FormRequest
 {
@@ -26,7 +26,10 @@ class EmployeeRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'employee_number' => [
+                'required',
+                Rule::unique('employees')->ignore($this->id),
+            ],
         ];
     }
 
