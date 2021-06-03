@@ -103,6 +103,11 @@ class Payslip extends Model
         return format_money($this->total_earnings);
     }
 
+    public function getEmployeeNameAttribute()
+    {
+        return $this->employee->name;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | MUTATORS
