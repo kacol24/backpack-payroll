@@ -82,6 +82,8 @@ class PayslipCrudController extends CrudController
         $data['gross_pay'] = $employee->salary;
         $data['net_pay'] = $data['gross_pay'];
         $data['name'] = 'SALARY/' . Carbon::parse($request->period)->format('Y/m/') . $employee->employee_number;
+        $data['allowances'] = $employee->allowances;
+        $data['deductions'] = $employee->deductions;
 
         // insert item in the db
         $item = $this->crud->create($data);

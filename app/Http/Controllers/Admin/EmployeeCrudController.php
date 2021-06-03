@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\EmployeeRequest;
+use App\Models\Allowance;
+use App\Models\Deduction;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -67,6 +69,65 @@ class EmployeeCrudController extends CrudController
 
         CRUD::field('start_date')->type('date_picker')->label('Start Date');
         CRUD::field('bio')->type('textarea')->label('Bio');
+
+        CRUD::addField([   // repeatable
+            'name'           => 'allowances',
+            'label'          => 'Allowances',
+            'type'           => 'repeatable',
+            'wrapper'        => [
+                'class' => 'form-group col-sm-6',
+            ],
+            'fields'         => [
+                [
+                    'name'    => 'allowance_id',
+                    'label'   => "Allowance",
+                    'type'    => 'select2_from_array',
+                    'options' => Allowance::ordered()->pluck('name', 'id'),
+                    'wrapper' => ['class' => 'form-group col-6'],
+                ],
+                [
+                    'name'    => 'amount',
+                    'type'    => 'money',
+                    'label'   => 'Amount',
+                    'prefix'  => 'Rp',
+                    'wrapper' => ['class' => 'form-group col-6'],
+                ],
+                [
+                    'name'    => 'description',
+                    'wrapper' => ['class' => 'form-group col-12'],
+                ],
+            ],
+            'new_item_label' => 'Add Allowance',
+        ]);
+        CRUD::addField([   // repeatable
+            'name'           => 'deductions',
+            'label'          => 'Deductions',
+            'type'           => 'repeatable',
+            'wrapper'        => [
+                'class' => 'form-group col-sm-6',
+            ],
+            'fields'         => [
+                [
+                    'name'    => 'deduction_id',
+                    'label'   => "Deduction",
+                    'type'    => 'select2_from_array',
+                    'options' => Deduction::ordered()->pluck('name', 'id'),
+                    'wrapper' => ['class' => 'form-group col-6'],
+                ],
+                [
+                    'name'    => 'amount',
+                    'type'    => 'money',
+                    'label'   => 'Amount',
+                    'prefix'  => 'Rp',
+                    'wrapper' => ['class' => 'form-group col-6'],
+                ],
+                [
+                    'name'    => 'description',
+                    'wrapper' => ['class' => 'form-group col-12'],
+                ],
+            ],
+            'new_item_label' => 'Add Deduction',
+        ]);
     }
 
     /**
