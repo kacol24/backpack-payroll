@@ -321,7 +321,7 @@ class PayslipCrudController extends CrudController
                     'name'    => 'allowance_id',
                     'label'   => "Allowance",
                     'type'    => 'select2_from_array',
-                    'options' => Allowance::ordered()->pluck('name', 'id'),
+                    'options' => Allowance::active()->ordered()->pluck('name', 'id'),
                     'wrapper' => ['class' => 'form-group col-6'],
                 ],
                 [
@@ -350,7 +350,7 @@ class PayslipCrudController extends CrudController
                     'name'    => 'deduction_id',
                     'label'   => "Deduction",
                     'type'    => 'select2_from_array',
-                    'options' => Deduction::ordered()->pluck('name', 'id'),
+                    'options' => Deduction::active()->ordered()->pluck('name', 'id'),
                     'wrapper' => ['class' => 'form-group col-6'],
                 ],
                 [

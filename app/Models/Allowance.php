@@ -47,6 +47,11 @@ class Allowance extends Model
         return $query->orderBy('lft');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS
