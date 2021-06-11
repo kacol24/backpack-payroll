@@ -30,7 +30,7 @@ class DeductionCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(\App\Models\Deduction::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/deduction');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/deduction');
         CRUD::setEntityNameStrings('deduction', 'deductions');
     }
 
@@ -78,12 +78,17 @@ class DeductionCrudController extends CrudController
     {
         CRUD::setValidation(DeductionRequest::class);
 
-        CRUD::setFromDb(); // fields
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
+        $this->crud->addField([
+            'name' => 'name',
+        ]);
+        $this->crud->addField([
+            'name' => 'description',
+        ]);
+        $this->crud->addField([
+            'name'  => 'is_active',
+            'type'  => 'checkbox',
+            'label' => 'Active?',
+        ]);
     }
 
     /**
