@@ -66,6 +66,8 @@ class DeductionCrudController extends CrudController
             'name'  => 'lft',
             'label' => 'Order',
         ]);
+
+        $this->crud->addClause('ordered');
     }
 
     /**
