@@ -30,7 +30,7 @@ class AllowanceCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(\App\Models\Allowance::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/allowance');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/allowance');
         CRUD::setEntityNameStrings('allowance', 'allowances');
     }
 
@@ -51,12 +51,21 @@ class AllowanceCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(); // columns
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        $this->crud->addColumn([
+            'name' => 'name',
+        ]);
+        $this->crud->addColumn([
+            'name' => 'description',
+        ]);
+        $this->crud->addColumn([
+            'name'  => 'is_active',
+            'type'  => 'check',
+            'label' => 'Active?',
+        ]);
+        $this->crud->addColumn([
+            'name'  => 'lft',
+            'label' => 'Order',
+        ]);
     }
 
     /**
