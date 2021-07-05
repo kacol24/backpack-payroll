@@ -30,4 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'pushbullet' => [
+        'access_token' => env('PUSHBULLET_ACCESS_TOKEN'),
+        'super_email' => env('PUSHBULLET_SUPER_EMAIL', 'kacol.bot@gmail.com'),
+    ]
 ];

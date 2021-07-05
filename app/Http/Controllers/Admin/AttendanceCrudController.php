@@ -80,6 +80,13 @@ class AttendanceCrudController extends CrudController
             ->label('Comment');
     }
 
+    public function setupShowOperation()
+    {
+        $this->crud->set('show.setFromDb', false);
+
+        $this->setupListOperation();
+    }
+
     /**
      * Define what happens when the Create operation is loaded.
      *

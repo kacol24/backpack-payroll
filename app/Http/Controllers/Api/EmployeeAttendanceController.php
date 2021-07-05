@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\EmployeeClockedIn;
+use App\Events\EmployeeClockedOut;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Attendance;
@@ -26,6 +28,8 @@ class EmployeeAttendanceController extends Controller
             $shift->selfie_out = $request->file('selfie_out');
             $shift->save();
 
+            event(new EmployeeClockedOut($shift, $pushbullet = true));
+
             return response()->json(new EmployeeResource($shift->employee), 200);
         }
 
@@ -37,6 +41,8 @@ class EmployeeAttendanceController extends Controller
         ]);
         $attendance->selfie_in = $request->file('selfie_in');
         $attendance->save();
+
+        event(new EmployeeClockedIn($shift, $pushbullet = true));
 
         return response()->json(new EmployeeResource($employee), 201);
     }
