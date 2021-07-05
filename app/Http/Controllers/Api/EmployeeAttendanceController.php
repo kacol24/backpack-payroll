@@ -42,7 +42,7 @@ class EmployeeAttendanceController extends Controller
         $attendance->selfie_in = $request->file('selfie_in');
         $attendance->save();
 
-        event(new EmployeeClockedIn($shift, $pushbullet = true));
+        event(new EmployeeClockedIn($attendance, $pushbullet = true));
 
         return response()->json(new EmployeeResource($employee), 201);
     }
