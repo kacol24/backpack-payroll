@@ -2,8 +2,10 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\Attendance;
+use App\Notifications\EmployeeAttendance;
+use Illuminate\Support\Facades\Notification;
+use NotificationChannels\Pushbullet\Targets\Email;
 
 class FlashClockedOutSuccess
 {
@@ -25,6 +27,13 @@ class FlashClockedOutSuccess
      */
     public function handle($event)
     {
-        \Alert::success('Berhasil akhiri shift!')->flash();
+        if (! $event->pushbullet) {
+            \Alert::success('Berhasil akhiri shift!')->flash();
+        } else {
+            $notification = new EmployeeAttendance($event->attendance, Attendance::TYPE_CLOCK_OUT);
+
+            Notification::route('pushbullet', new Email(config('services.pushbullet.super_email')))
+                        ->notify($notification);
+        }
     }
 }

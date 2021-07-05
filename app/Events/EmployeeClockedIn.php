@@ -14,14 +14,19 @@ class EmployeeClockedIn
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $attendance;
+
+    public $pushbullet;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($attendance, $pushbullet = false)
     {
-        //
+        $this->attendance = $attendance;
+        $this->pushbullet = $pushbullet;
     }
 
     /**

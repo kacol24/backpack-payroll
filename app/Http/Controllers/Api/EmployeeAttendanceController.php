@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\EmployeeClockedIn;
+use App\Events\EmployeeClockedOut;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Attendance;
 use App\Models\Employee;
-use App\Notifications\EmployeeAttendance;
-use App\User;
 use Illuminate\Http\Request;
 
 class EmployeeAttendanceController extends Controller
 {
     public function updateClock(Request $request, $employeeId)
     {
-        $super = User::find(1);
-
         $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
                            ->latest()
                            ->whereNull('end_at')
@@ -30,7 +28,7 @@ class EmployeeAttendanceController extends Controller
             $shift->selfie_out = $request->file('selfie_out');
             $shift->save();
 
-            $super->notify(new EmployeeAttendance($shift, Attendance::TYPE_CLOCK_OUT));
+            event(new EmployeeClockedOut($shift, $pushbullet = true));
 
             return response()->json(new EmployeeResource($shift->employee), 200);
         }
@@ -44,7 +42,7 @@ class EmployeeAttendanceController extends Controller
         $attendance->selfie_in = $request->file('selfie_in');
         $attendance->save();
 
-        $super->notify(new EmployeeAttendance($attendance, Attendance::TYPE_CLOCK_IN));
+        event(new EmployeeClockedIn($shift, $pushbullet = true));
 
         return response()->json(new EmployeeResource($employee), 201);
     }

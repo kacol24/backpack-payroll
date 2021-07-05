@@ -6,15 +6,11 @@ use App\Events\EmployeeClockedIn;
 use App\Events\EmployeeClockedOut;
 use App\Models\Attendance;
 use App\Models\Employee;
-use App\Notifications\EmployeeAttendance;
-use App\User;
 
 class EmployeeAttendanceController
 {
     public function updateClock($employeeId)
     {
-        $super = User::find(1);
-
         $shift = Attendance::where('shift_date', now()->format('Y-m-d'))
                            ->whereNull('end_at')
                            ->whereHas('employee', function ($query) use ($employeeId) {
@@ -26,9 +22,7 @@ class EmployeeAttendanceController
                 'end_at' => now(),
             ]);
 
-            event(new EmployeeClockedOut());
-
-            $super->notify(new EmployeeAttendance($shift, Attendance::TYPE_CLOCK_OUT));
+            event(new EmployeeClockedOut($shift));
 
             return back();
         }
@@ -40,9 +34,7 @@ class EmployeeAttendanceController
             'start_at'   => now(),
         ]);
 
-        event(new EmployeeClockedIn());
-
-        $super->notify(new EmployeeAttendance($attendance, Attendance::TYPE_CLOCK_IN));
+        event(new EmployeeClockedIn($attendance));
 
         return back();
     }
