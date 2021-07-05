@@ -77,7 +77,7 @@ class EmployeeAttendance extends Notification implements ShouldQueue
             '{attendance_type}',
             '{attendance_at}',
         ], [
-            $this->attendance->name,
+            $this->attendance->employee->name,
             $this->attendanceType,
             $this->getAttendanceAt(),
         ], $template);
