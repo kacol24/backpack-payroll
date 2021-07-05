@@ -30,4 +30,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'pushbullet' => [
+        'access_token' => env('PUSHBULLET_ACCESS_TOKEN')
+    ]
 ];
