@@ -49,37 +49,46 @@ class EmployeeAttendance extends Notification implements ShouldQueue
      */
     public function toPushbullet($notifiable)
     {
-        $employee = $this->attendance->employee;
+        return PushbulletMessage::create($this->getMessage())
+                                ->title($this->getTitle())
+                                ->link()
+                                ->url(route('attendance.show', $this->attendance->id));
+    }
 
-        $title = 'Clock-{attendance_type}: {employee_name} has just clocked-{attendance_type}!';
-        $message = '{employee_name} clocked-{attendance_type} at {attendance_at}';
+    private function getTitle()
+    {
+        $template = 'Clock-{attendance_type}: {employee_name} has just clocked-{attendance_type}!';
 
-        $title = str_replace([
+        return str_replace([
             '{employee_name}',
             '{attendance_type}',
         ], [
-            $employee->name,
+            $this->attendance->employee->name,
             $this->attendanceType,
-        ], $title);
+        ], $template);
+    }
 
-        $attendanceAt = $this->attendance->start_at->format('d M Y, H:i:s');
-        if ($this->attendanceType == Attendance::TYPE_CLOCK_OUT) {
-            $attendanceAt = $this->attendance->end_at->format('d M Y, H:i:s');
-        }
+    private function getMessage()
+    {
+        $template = '{employee_name} clocked-{attendance_type} at {attendance_at}';
 
-        $message = str_replace([
+        return str_replace([
             '{employee_name}',
             '{attendance_type}',
             '{attendance_at}',
         ], [
-            $employee->name,
+            $this->attendance->name,
             $this->attendanceType,
-            $attendanceAt,
-        ], $message);
+            $this->getAttendanceAt(),
+        ], $template);
+    }
 
-        return PushbulletMessage::create($message)
-                                ->title($title)
-                                ->link()
-                                ->url(route('attendance.show', $this->attendance->id));
+    private function getAttendanceAt()
+    {
+        if ($this->attendanceType == Attendance::TYPE_CLOCK_IN) {
+            return $this->attendance->start_at->format('d M Y, H:i:s');
+        }
+
+        return $this->attendance->end_at->format('d M Y, H:i:s');
     }
 }
