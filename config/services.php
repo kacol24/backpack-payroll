@@ -31,6 +31,7 @@ return [
     ],
 
     'pushbullet' => [
-        'access_token' => env('PUSHBULLET_ACCESS_TOKEN')
+        'access_token' => env('PUSHBULLET_ACCESS_TOKEN'),
+        'super_email' => env('PUSHBULLET_SUPER_EMAIL', 'kacol.bot@gmail.com'),
     ]
 ];

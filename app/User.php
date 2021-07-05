@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -39,6 +38,6 @@ class User extends Authenticatable
 
     public function routeNotificationForPushbullet()
     {
-        return new \NotificationChannels\Pushbullet\Targets\Email('kacol.bot@gmail.com');
+        return new \NotificationChannels\Pushbullet\Targets\Email(config('services.pushbullet.super_email'));
     }
 }
