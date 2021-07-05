@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\EmployeeClockedIn;
+use App\Events\EmployeeClockedOut;
 use App\Models\Attendance;
 use App\Models\Employee;
 
@@ -20,19 +22,19 @@ class EmployeeAttendanceController
                 'end_at' => now(),
             ]);
 
-            \Alert::success('Berhasil akhiri shift!')->flash();
+            event(new EmployeeClockedOut($shift));
 
             return back();
         }
 
         $employee = Employee::find($employeeId);
 
-        $employee->attendances()->create([
+        $attendance = $employee->attendances()->create([
             'shift_date' => now(),
             'start_at'   => now(),
         ]);
 
-        \Alert::success('Berhasil memulai shift!')->flash();
+        event(new EmployeeClockedIn($attendance));
 
         return back();
     }

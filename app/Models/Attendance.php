@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 
 class Attendance extends Model
 {
+    const TYPE_CLOCK_IN = 'in';
+    const TYPE_CLOCK_OUT = 'out';
+
     use CrudTrait;
 
     /*
