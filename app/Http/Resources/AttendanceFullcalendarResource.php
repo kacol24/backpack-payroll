@@ -33,7 +33,7 @@ class AttendanceFullcalendarResource extends JsonResource
         ], [
             optional($this->start_at)->format('H:i:s'),
             optional($this->end_at)->format('H:i:s'),
-            ceil(optional($this->end_at)->diffInSeconds($this->start_at) / 60 / 60),
+            $this->hours_worked,
         ], $descriptionTemplate);
 
         return [
