@@ -70,7 +70,7 @@ class Attendance extends Model
     */
     public function getHoursWorkedAttribute()
     {
-        return ceil(optional($this->end_at)->diffInSeconds($this->start_at) / 60 / 60);
+        return ceil($this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60);
     }
 
     /*

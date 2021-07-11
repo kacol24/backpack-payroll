@@ -30,8 +30,15 @@ class AttendanceCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(\App\Models\Attendance::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/attendance');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/attendance');
         CRUD::setEntityNameStrings('attendance', 'attendances');
+    }
+
+    public function setupShowOperation()
+    {
+        $this->crud->set('show.setFromDb', false);
+
+        $this->setupListOperation();
     }
 
     /**
@@ -75,16 +82,12 @@ class AttendanceCrudController extends CrudController
             ->type('view')
             ->view('attendance.columns.clock_out')
             ->label('Clock Out');
+        CRUD::column('hours_worked')
+            ->type('number')
+            ->label('Hours Worked');
         CRUD::column('comment')
             ->type('text')
             ->label('Comment');
-    }
-
-    public function setupShowOperation()
-    {
-        $this->crud->set('show.setFromDb', false);
-
-        $this->setupListOperation();
     }
 
     /**
