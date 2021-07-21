@@ -59,8 +59,8 @@ class AttendanceCrudController extends CrudController
             false,
             function ($value) { // if the filter is active, apply these constraints
                 $dates = json_decode($value);
-                $this->crud->addClause('where', 'shift_date', '>=', Carbon::parse($dates->from)->startOfDay());
-                $this->crud->addClause('where', 'shift_date', '<=', Carbon::parse($dates->to)->endOfDay());
+                $this->crud->addClause('where', 'start_at', '>=', $dates->from);
+                $this->crud->addClause('where', 'end_at', '<=', $dates->to);
             });
 
         $this->crud->addFilter([
