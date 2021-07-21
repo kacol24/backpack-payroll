@@ -71,13 +71,18 @@ class Attendance extends Model
     */
     public function getHoursWorkedAttribute()
     {
+        return round($this->real_hours_worked);
+    }
+
+    public function getRealHoursWorkedAttribute()
+    {
         if (! $this->end_at) {
             return 0;
         }
 
         $hoursWorked = $this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60;
 
-        return round($hoursWorked);
+        return $hoursWorked;
     }
 
     /*
