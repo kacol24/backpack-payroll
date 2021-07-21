@@ -126,8 +126,7 @@ class AttendanceCrudController extends CrudController
             ->type('textarea')
             ->label('Comment');
         CRUD::field('shift_date')
-            ->type('hidden')
-            ->value(now()->format('Y-m-d'));
+            ->type('date_picker');
     }
 
     /**
