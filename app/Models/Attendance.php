@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class Attendance extends Model
 {
     const TYPE_CLOCK_IN = 'in';
+
     const TYPE_CLOCK_OUT = 'out';
 
     use CrudTrait;
@@ -70,7 +71,13 @@ class Attendance extends Model
     */
     public function getHoursWorkedAttribute()
     {
-        return ceil($this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60);
+        if (! $this->end_at) {
+            return 0;
+        }
+
+        $hoursWorked = $this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60;
+
+        return round($hoursWorked);
     }
 
     /*
@@ -130,7 +137,7 @@ class Attendance extends Model
         if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
             $file = request()->file($attribute_name);
-            $new_file_name = now()->format('Ymd_H-i-s') . '_' . strtoupper(Str::slug($attribute_name)) . '_' . strtoupper(Str::slug($this->employee->name)) . '.jpg';
+            $new_file_name = now()->format('Ymd_H-i-s').'_'.strtoupper(Str::slug($attribute_name)).'_'.strtoupper(Str::slug($this->employee->name)).'.jpg';
 
             // 2. Move the new file to the correct path
             $file_path = $file->storeAs($destination_path, $new_file_name, $disk);
