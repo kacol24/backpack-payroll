@@ -52,17 +52,19 @@
                 @php
                     $shift = request('shift_date');
                     $employeeId = request('employee_id');
-                    $sumHoursWorked = App\Models\Attendance::when($shift, function($query, $shift){
-                                                        $period = json_decode($shift);
-
-                                                        return $query->where('start_at', '>=', $period->from)
-                                                                     ->where('end_at', '<=', $period->to);
-                                                    })
-                                                    ->when($employeeId, function($query, $employeeId){
-                                                        return $query->whereIn('employee_id', json_decode($employeeId));
-                                                    })->get()->sum('hours_worked');
                 @endphp
-                @if($shift || $employeeId)
+                @if($shift && $employeeId)
+                    @php
+                        $sumHoursWorked = App\Models\Attendance::when($shift,function($query, $shift){
+                                                                                $period = json_decode($shift);
+
+                                                                                return $query->where('start_at', '>=', $period->from)
+                                                                                             ->where('end_at', '<=', $period->to);
+                                                                            })
+                                                                ->when($employeeId, function($query, $employeeId){
+                                                                    return $query->whereIn('employee_id', json_decode($employeeId));
+                                                                })->get()->sum('hours_worked');
+                    @endphp
                     <div class="col-md-auto text-right">
                         <table class="font-3xl text-right ml-auto">
                             <tr>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Date;
@@ -54,7 +55,24 @@ class Attendance extends Model
 
     public function identifiableName()
     {
-        return $this->employee->name . " [{$this->start_at->format('Y-m-d')}]";
+        return $this->employee->name." [{$this->start_at->format('Y-m-d')}]";
+    }
+
+    public function calculateDeltaHours($start, $end)
+    {
+        if (!$start instanceof Carbon) {
+            $start = Carbon::parse($start);
+        }
+
+        if (! $end instanceof Carbon) {
+            $end = Carbon::parse($end);
+        }
+
+        if (! $end) {
+            return 0;
+        }
+
+        return $start->diffInSeconds($end) / 60 / 60;
     }
 
     /*
@@ -78,20 +96,13 @@ class Attendance extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
-    public function getHoursWorkedAttribute()
-    {
-        return round($this->real_hours_worked);
-    }
-
     public function getRealHoursWorkedAttribute()
     {
         if (! $this->end_at) {
             return 0;
         }
 
-        $hoursWorked = $this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60;
-
-        return $hoursWorked;
+        return $this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60;
     }
 
     /*
