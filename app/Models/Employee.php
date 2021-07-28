@@ -5,10 +5,12 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Employee extends Model
 {
     use CrudTrait;
+    use RevisionableTrait;
     use SoftDeletes;
 
     /*
@@ -40,6 +42,11 @@ class Employee extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function identifiableName()
+    {
+        return "[{$this->employee_number}] " . $this->name;
+    }
+
     public function attendanceButtons()
     {
         $shift = $this->isOnShift();
