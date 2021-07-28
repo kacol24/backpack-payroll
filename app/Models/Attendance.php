@@ -6,6 +6,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Attendance extends Model
 {
@@ -14,6 +15,7 @@ class Attendance extends Model
     const TYPE_CLOCK_OUT = 'out';
 
     use CrudTrait;
+    use RevisionableTrait;
 
     /*
     |--------------------------------------------------------------------------
@@ -46,6 +48,11 @@ class Attendance extends Model
         static::deleting(function ($obj) {
             \Storage::disk('public')->delete($obj->selfie);
         });
+    }
+
+    public function identifiableName()
+    {
+        return $this->employee->name . " [{$this->start_at->format('Y-m-d')}]";
     }
 
     /*

@@ -6,7 +6,7 @@ use App\Http\Requests\AttendanceRequest;
 use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Carbon\Carbon;
+use Backpack\ReviseOperation\ReviseOperation;
 
 /**
  * Class AttendanceCrudController
@@ -21,6 +21,7 @@ class AttendanceCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ReviseOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
