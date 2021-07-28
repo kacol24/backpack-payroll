@@ -58,23 +58,6 @@ class Attendance extends Model
         return $this->employee->name." [{$this->start_at->format('Y-m-d')}]";
     }
 
-    public function calculateDeltaHours($start, $end)
-    {
-        if (!$start instanceof Carbon) {
-            $start = Carbon::parse($start);
-        }
-
-        if (! $end instanceof Carbon) {
-            $end = Carbon::parse($end);
-        }
-
-        if (! $end) {
-            return 0;
-        }
-
-        return $start->diffInSeconds($end) / 60 / 60;
-    }
-
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
