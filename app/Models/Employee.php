@@ -79,8 +79,11 @@ class Employee extends Model
 
     public function clockOut()
     {
-        return $this->isOnShift()->update([
+        $attendance = $this->isOnShift();
+
+        return $attendance->update([
             'end_at' => now(),
+            'hours_worked' => calculate_delta_hours($attendance->start_at, now())
         ]);
     }
 
