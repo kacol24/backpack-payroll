@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\ReorderOperation;
+use Backpack\ReviseOperation\ReviseOperation;
 
 /**
  * Class AllowanceDeductionControllerCrudController
@@ -19,6 +20,7 @@ class AllowanceDeductionController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use ReorderOperation;
+    use ReviseOperation;
 
     protected function setupReorderOperation()
     {

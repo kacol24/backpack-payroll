@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Deduction extends Model
 {
     use CrudTrait;
+    use RevisionableTrait;
 
     /*
     |--------------------------------------------------------------------------
@@ -22,12 +24,22 @@ class Deduction extends Model
     // protected $fillable = [];
     // protected $hidden = [];
     // protected $dates = [];
+    protected $dontKeepRevisionOf = [
+        'parent_id',
+        'lft',
+        'rgt',
+        'depth'
+    ];
 
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function identifiableName()
+    {
+        return $this->name;
+    }
 
     /*
     |--------------------------------------------------------------------------
