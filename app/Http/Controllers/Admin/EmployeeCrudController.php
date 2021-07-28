@@ -7,6 +7,7 @@ use App\Models\Allowance;
 use App\Models\Deduction;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\ReviseOperation\ReviseOperation;
 
 /**
  * Class EmployeeCrudController
@@ -21,6 +22,7 @@ class EmployeeCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ReviseOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -44,6 +46,16 @@ class EmployeeCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->addFilter([
+            'name'  => 'is_active',
+            'type'  => 'simple',
+            'label' => 'Active',
+        ],
+            false,
+            function ($values) { // if the filter is active
+                $this->crud->addClause('active');
+            });
+
         CRUD::column('employee_number');
         CRUD::column('name');
         CRUD::column('start_date')

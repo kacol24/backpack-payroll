@@ -6,7 +6,7 @@ use App\Http\Requests\AttendanceRequest;
 use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Carbon\Carbon;
+use Backpack\ReviseOperation\ReviseOperation;
 
 /**
  * Class AttendanceCrudController
@@ -21,6 +21,7 @@ class AttendanceCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ReviseOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -30,8 +31,17 @@ class AttendanceCrudController extends CrudController
     public function setup()
     {
         CRUD::setModel(\App\Models\Attendance::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/attendance');
+        CRUD::setRoute(config('backpack.base.route_prefix').'/attendance');
         CRUD::setEntityNameStrings('attendance', 'attendances');
+
+        $this->crud->setListView('attendance.list');
+    }
+
+    public function setupShowOperation()
+    {
+        $this->crud->set('show.setFromDb', false);
+
+        $this->setupListOperation();
     }
 
     /**
@@ -50,8 +60,8 @@ class AttendanceCrudController extends CrudController
             false,
             function ($value) { // if the filter is active, apply these constraints
                 $dates = json_decode($value);
-                $this->crud->addClause('where', 'shift_date', '>=', Carbon::parse($dates->from)->startOfDay());
-                $this->crud->addClause('where', 'shift_date', '<=', Carbon::parse($dates->to)->endOfDay());
+                $this->crud->addClause('where', 'start_at', '>=', $dates->from);
+                $this->crud->addClause('where', 'end_at', '<=', $dates->to);
             });
 
         $this->crud->addFilter([
@@ -59,7 +69,7 @@ class AttendanceCrudController extends CrudController
             'type'  => 'select2_multiple',
             'label' => 'Employee',
         ], function () {
-            return Employee::active()->get()->pluck('name', 'id')->toArray();
+            return Employee::get()->pluck('name', 'id')->toArray();
         }, function ($values) { // if the filter is active
             $this->crud->addClause('whereIn', 'employee_id', json_decode($values));
         });
@@ -75,16 +85,12 @@ class AttendanceCrudController extends CrudController
             ->type('view')
             ->view('attendance.columns.clock_out')
             ->label('Clock Out');
+        CRUD::column('hours_worked')
+            ->type('number')
+            ->label('Hours Worked');
         CRUD::column('comment')
             ->type('text')
             ->label('Comment');
-    }
-
-    public function setupShowOperation()
-    {
-        $this->crud->set('show.setFromDb', false);
-
-        $this->setupListOperation();
     }
 
     /**
@@ -105,13 +111,11 @@ class AttendanceCrudController extends CrudController
             ->label('Selfie Out')
             ->type('upload')
             ->upload(true);
-        CRUD::field('employee_id')->type('select2')
+        CRUD::field('employee_id')
+            ->type('select2')
             ->entity('employee')
             ->model(Employee::class)
             ->attribute('name')
-            ->options(function ($query) {
-                return $query->active()->get();
-            })
             ->label('Employee');
         CRUD::field('start_at')
             ->type('datetime_picker')
@@ -123,8 +127,7 @@ class AttendanceCrudController extends CrudController
             ->type('textarea')
             ->label('Comment');
         CRUD::field('shift_date')
-            ->type('hidden')
-            ->value(now()->format('Y-m-d'));
+            ->type('date_picker');
     }
 
     /**

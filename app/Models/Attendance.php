@@ -4,15 +4,20 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Attendance extends Model
 {
     const TYPE_CLOCK_IN = 'in';
+
     const TYPE_CLOCK_OUT = 'out';
 
     use CrudTrait;
+    use RevisionableTrait;
+    use SoftDeletes;
 
     /*
     |--------------------------------------------------------------------------
@@ -47,6 +52,11 @@ class Attendance extends Model
         });
     }
 
+    public function identifiableName()
+    {
+        return $this->employee->name . " [{$this->start_at->format('Y-m-d')}]";
+    }
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
@@ -68,6 +78,21 @@ class Attendance extends Model
     | ACCESSORS
     |--------------------------------------------------------------------------
     */
+    public function getHoursWorkedAttribute()
+    {
+        return round($this->real_hours_worked);
+    }
+
+    public function getRealHoursWorkedAttribute()
+    {
+        if (! $this->end_at) {
+            return 0;
+        }
+
+        $hoursWorked = $this->start_at->diffInSeconds($this->end_at ?? now()) / 60 / 60;
+
+        return $hoursWorked;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -126,7 +151,7 @@ class Attendance extends Model
         if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
             $file = request()->file($attribute_name);
-            $new_file_name = now()->format('Ymd_H-i-s') . '_' . strtoupper(Str::slug($attribute_name)) . '_' . strtoupper(Str::slug($this->employee->name)) . '.jpg';
+            $new_file_name = now()->format('Ymd_H-i-s').'_'.strtoupper(Str::slug($attribute_name)).'_'.strtoupper(Str::slug($this->employee->name)).'.jpg';
 
             // 2. Move the new file to the correct path
             $file_path = $file->storeAs($destination_path, $new_file_name, $disk);
