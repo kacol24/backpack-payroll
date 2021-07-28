@@ -5,10 +5,12 @@ namespace App\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Employee extends Model
 {
     use CrudTrait;
+    use RevisionableTrait;
     use SoftDeletes;
 
     /*
@@ -40,29 +42,46 @@ class Employee extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function identifiableName()
+    {
+        return "[{$this->employee_number}] " . $this->name;
+    }
+
     public function attendanceButtons()
     {
         $shift = $this->isOnShift();
 
         if ($this->is_active) {
             if ($shift) {
-                return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_out', $this->id) . '"><i class="la la-stop-circle"></i> Clock Out</a>';
+                return '<a class="btn btn-sm btn-link" href="'.route('employee.clock_out', $this->id).'">
+                            <i class="la la-stop-circle"></i> Clock Out
+                        </a>';
             }
 
-            return '<a class="btn btn-sm btn-link" href="' . route('employee.clock_in', $this->id) . '"><i class="la la-play-circle"></i> Clock In</a>';
+            return '<a class="btn btn-sm btn-link" href="'.route('employee.clock_in', $this->id).'">
+                        <i class="la la-play-circle"></i> Clock In
+                    </a>';
         }
     }
 
     public function isOnShift()
     {
-        $employee = $this;
+        return $this->attendances->whereNull('end_at')->sortByDesc('start_at')->first();
+    }
 
-        return Attendance::where('shift_date', now()->format('Y-m-d'))
-                         ->whereNull('end_at')
-                         ->whereHas('employee', function ($query) use ($employee) {
-                             $query->where('id', $employee->id);
-                         })
-                         ->first();
+    public function clockIn()
+    {
+        return $this->attendances()->create([
+            'shift_date' => now(),
+            'start_at'   => now(),
+        ]);
+    }
+
+    public function clockOut()
+    {
+        return $this->isOnShift()->update([
+            'end_at' => now(),
+        ]);
     }
 
     /*
@@ -81,7 +100,10 @@ class Employee extends Model
             $date = now()->format('Y-m-d');
         }
 
-        return $this->attendances()->where('shift_date', $date)->latest()->get();
+        return $this->attendances()
+                    ->whereDate('start_date', $date)
+                    ->orderBy('start_date', 'desc')
+                    ->get();
     }
 
     /*

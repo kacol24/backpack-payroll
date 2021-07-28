@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\Payslip;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\ReviseOperation\ReviseOperation;
 use Carbon\Carbon;
 
 /**
@@ -24,6 +25,7 @@ class PayslipCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ReviseOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.

@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Allowance extends Model
 {
     use CrudTrait;
+    use RevisionableTrait;
 
     /*
     |--------------------------------------------------------------------------
@@ -30,6 +32,10 @@ class Allowance extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function identifiableName()
+    {
+        return $this->name;
+    }
 
     /*
     |--------------------------------------------------------------------------
