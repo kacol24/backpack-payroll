@@ -63,7 +63,14 @@
                                                                             })
                                                                 ->when($employeeId, function($query, $employeeId){
                                                                     return $query->whereIn('employee_id', json_decode($employeeId));
-                                                                })->get()->sum('hours_worked');
+                                                                })
+                                                                ->get()
+                                                                ->map(function ($attendance){
+                                                                    $attendance->hours_worked = round($attendance->hours_worked);
+
+                                                                    return $attendance;
+                                                                })
+                                                                ->sum('hours_worked');
                     @endphp
                     <div class="col-md-auto text-right">
                         <table class="font-3xl text-right ml-auto">
