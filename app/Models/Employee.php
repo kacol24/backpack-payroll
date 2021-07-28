@@ -81,10 +81,12 @@ class Employee extends Model
     {
         $attendance = $this->isOnShift();
 
-        return $attendance->update([
-            'end_at' => now(),
+        $attendance->update([
+            'end_at'       => now(),
             'hours_worked' => calculate_delta_hours($attendance->start_at, now())
         ]);
+
+        return $attendance;
     }
 
     /*
