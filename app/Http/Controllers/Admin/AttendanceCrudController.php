@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AttendanceRequest;
+use App\Models\Attendance;
 use App\Models\Employee;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -42,6 +43,44 @@ class AttendanceCrudController extends CrudController
         $this->crud->set('show.setFromDb', false);
 
         $this->setupListOperation();
+    }
+
+    /**
+     * Update the specified resource in the database.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update()
+    {
+        $this->crud->hasAccessOrFail('update');
+
+        // execute the FormRequest authorization and validation, if one is required
+        $request = $this->crud->validateRequest();
+
+        $record = Attendance::find($request->id);
+
+        if ($record->hours_worked == $request->hours_worked) {
+            if ($record->start_at != $request->start_at || $record->end_at != $request->end_at) {
+                $request->merge([
+                    'hours_worked' => $record->calculateDeltaHours($request->start_at, $request->end_at),
+                ]);
+            }
+        }
+
+        // update the row in the db
+        $item = $this->crud->update(
+            $request->get($this->crud->model->getKeyName()),
+            \Arr::only($request->all(), array_keys($this->crud->getStrippedSaveRequest()))
+        );
+        $this->data['entry'] = $this->crud->entry = $item;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.update_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($item->getKey());
     }
 
     /**
@@ -123,6 +162,11 @@ class AttendanceCrudController extends CrudController
         CRUD::field('end_at')
             ->type('datetime_picker')
             ->label('Clock Out');
+        CRUD::field('hours_worked')
+            ->type('number')
+            ->attributes([
+                'step' => 'any',
+            ]);
         CRUD::field('comment')
             ->type('textarea')
             ->label('Comment');
