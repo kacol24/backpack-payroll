@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -16,6 +17,7 @@ class Attendance extends Model
 
     use CrudTrait;
     use RevisionableTrait;
+    use SoftDeletes;
 
     /*
     |--------------------------------------------------------------------------
