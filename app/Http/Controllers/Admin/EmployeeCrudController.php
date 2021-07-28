@@ -46,6 +46,16 @@ class EmployeeCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->addFilter([
+            'name'  => 'is_active',
+            'type'  => 'simple',
+            'label' => 'Active',
+        ],
+            false,
+            function ($values) { // if the filter is active
+                $this->crud->addClause('active');
+            });
+
         CRUD::column('employee_number');
         CRUD::column('name');
         CRUD::column('start_date')
