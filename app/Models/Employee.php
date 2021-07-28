@@ -101,8 +101,8 @@ class Employee extends Model
         }
 
         return $this->attendances()
-                    ->whereDate('start_date', $date)
-                    ->orderBy('start_date', 'desc')
+                    ->whereDate('start_at', $date)
+                    ->orderBy('start_at', 'desc')
                     ->get();
     }
 
