@@ -62,11 +62,13 @@ class Employee extends Model
                         <i class="la la-play-circle"></i> Clock In
                     </a>';
         }
-    }
 
     public function isOnShift()
     {
-        return $this->attendances->whereNull('end_at')->sortByDesc('start_at')->first();
+        return $this->attendances->where('shift_date', today())
+                                 ->whereNull('end_at')
+                                 ->sortByDesc('start_at')
+                                 ->first();
     }
 
     public function clockIn()
