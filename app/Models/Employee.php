@@ -49,19 +49,22 @@ class Employee extends Model
 
     public function attendanceButtons()
     {
+        if (!$this->is_active) {
+            return false;
+        }
+
         $shift = $this->isOnShift();
 
-        if ($this->is_active) {
-            if ($shift) {
-                return '<a class="btn btn-sm btn-link" href="'.route('employee.clock_out', $this->id).'">
+        if ($shift) {
+            return '<a class="btn btn-sm btn-link" href="'.route('employee.clock_out', $this->id).'">
                             <i class="la la-stop-circle"></i> Clock Out
                         </a>';
-            }
+        }
 
-            return '<a class="btn btn-sm btn-link" href="'.route('employee.clock_in', $this->id).'">
+        return '<a class="btn btn-sm btn-link" href="'.route('employee.clock_in', $this->id).'">
                         <i class="la la-play-circle"></i> Clock In
                     </a>';
-        }
+    }
 
     public function isOnShift()
     {
