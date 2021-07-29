@@ -59,7 +59,7 @@ class AttendanceCrudController extends CrudController
 
         $record = Attendance::find($request->id);
 
-        if ($record->hours_worked == $request->hours_worked) {
+        if ($record->hours_worked == $request->hours_worked && $record->end_at) {
             if ($record->start_at != $request->start_at || $record->end_at != $request->end_at) {
                 $request->merge([
                     'hours_worked' => calculate_delta_hours($request->start_at, $request->end_at),
