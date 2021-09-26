@@ -113,6 +113,14 @@ class AttendanceCrudController extends CrudController
             $this->crud->addClause('whereIn', 'employee_id', json_decode($values));
         });
 
+        // simple filter
+        $this->crud->addFilter([
+            'type'  => 'simple',
+            'name'  => 'compact',
+            'label' => 'Compact',
+        ], false, function () {
+        });
+
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
