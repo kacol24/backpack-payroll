@@ -6,7 +6,7 @@
 @endphp
 <span data-order="{{ $entry->end_at ?? '' }}">
 	{{ $column['text'] }}
-    @if(empty($entry->selfie_out))
+    @if(empty($entry->selfie_out) || request('compact'))
     @else
         <img src="{{ asset('storage/' . $entry->selfie_out) }}" alt="selfie in" style="max-height: none;width: 100px;"
              class="d-block"/>
