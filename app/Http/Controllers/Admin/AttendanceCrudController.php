@@ -121,6 +121,10 @@ class AttendanceCrudController extends CrudController
         ], false, function () {
         });
 
+        if (request('compact')) {
+            $this->crud->removeAllButtonsFromStack('line');
+        }
+
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
