@@ -55,7 +55,7 @@
                 @endphp
                 @if($shift && $employeeId)
                     @php
-                        $sumHoursWorked = App\Models\Attendance::when($shift,function($query, $shift){
+                        $employeeAttendance = App\Models\Attendance::when($shift,function($query, $shift){
                                                                                 $period = json_decode($shift);
 
                                                                                 return $query->where('start_at', '>=', $period->from)
@@ -64,16 +64,25 @@
                                                                 ->when($employeeId, function($query, $employeeId){
                                                                     return $query->whereIn('employee_id', json_decode($employeeId));
                                                                 })
-                                                                ->get()
-                                                                ->map(function ($attendance){
+                                                                ->get();
+                        $sumHoursWorked = (clone $employeeAttendance)->map(function ($attendance){
                                                                     $attendance->hours_worked = round($attendance->hours_worked);
 
                                                                     return $attendance;
                                                                 })
                                                                 ->sum('hours_worked');
+                        $daysWorked = (clone $employeeAttendance)->groupBy(function($attendance){
+                            return $attendance->shift_date->format('Y-m-d');
+                        });
                     @endphp
                     <div class="col-md-auto text-right">
                         <table class="font-3xl text-right ml-auto">
+                            <tr>
+                                <td>Total Days:</td>
+                                <th>
+                                    {{ $daysWorked->count() }}
+                                </th>
+                            </tr>
                             <tr>
                                 <td>Total Hours:</td>
                                 <th>
