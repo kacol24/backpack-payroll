@@ -58,8 +58,8 @@
                         $employeeAttendance = App\Models\Attendance::when($shift,function($query, $shift){
                                                                                 $period = json_decode($shift);
 
-                                                                                return $query->where('start_at', '>=', $period->from)
-                                                                                             ->where('end_at', '<=', $period->to);
+                                                                                return $query->where('shift_date', '>=', $period->from)
+                                                                                             ->where('shift_date', '<=', $period->to);
                                                                             })
                                                                 ->when($employeeId, function($query, $employeeId){
                                                                     return $query->whereIn('employee_id', json_decode($employeeId));
