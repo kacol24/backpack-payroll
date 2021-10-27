@@ -12,7 +12,7 @@
 @endphp
 
 @section('header')
-    <div class="container-fluid">
+    <div class="container-fluid {{ request('compact') ? 'd-print-none' : '' }}">
         <h2>
             <span class="text-capitalize">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</span>
             <small id="datatable_info_stack">{!! $crud->getSubheading() ?? '' !!}</small>
@@ -79,11 +79,9 @@
                         <table class="font-3xl text-right ml-auto">
                             <tr>
                                 <td>Total Days:</td>
-                                <th>
+                                <th class="pr-5">
                                     {{ $daysWorked->count() }}
                                 </th>
-                            </tr>
-                            <tr>
                                 <td>Total Hours:</td>
                                 <th>
                                     {{ $sumHoursWorked }}
