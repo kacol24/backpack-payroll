@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <div class="row justify-content-between">
                         <div class="col-3">
-                            <img src="{{ asset('images/logo-square.png') }}" alt="company logo" class="img-fluid w-100">
+                            <img src="{{ asset('images/logo-nineteas-square.png') }}" alt="company logo" class="img-fluid w-100">
                         </div>
                         <div class="col-6">
                             <address>
