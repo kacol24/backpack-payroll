@@ -50,11 +50,12 @@
                         <div class="col-6">
                             <address>
                                 <strong>
-                                    Kamsia Boba Loop
+                                    Ninetea's
                                 </strong><br>
-                                Loop Plaza Graha Famili<br>
-                                Jl. Mayjen Yono Suwoyo No. 28<br>
-                                Dukuhpakis, Surabaya, Jawa Timur 60226<br>
+                                Ruko Food Arcade (Seberang Geprek Bensu)<br>
+                                G-walk Citraland<br>
+                                Jl. Niaga Lontar II, Lidah Kulon, Kec. Lakarsantri<br>
+                                Surabaya, Jawa Timur 60213<br>
                                 +62851 5504 3789
                             </address>
                         </div>
