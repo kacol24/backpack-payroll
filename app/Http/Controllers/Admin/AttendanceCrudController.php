@@ -125,6 +125,12 @@ class AttendanceCrudController extends CrudController
             $this->crud->removeAllButtonsFromStack('line');
         }
 
+        $this->crud->addColumn([
+            'name'      => 'row_number',
+            'type'      => 'row_number',
+            'label'     => '#',
+            'orderable' => false,
+        ])->makeFirstColumn();
         CRUD::column('employee')
             ->type('relationship')
             ->label('Employee');
